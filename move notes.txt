@@ -1,0 +1,6 @@
+Accuracy of 200 = Cannot Miss
+Power of 0 = Does no Damage
+Power of -1 = Special Formula for Damage
+
+Need to deal with multi-hit moves
+Double Kick,  Population Bomb, Icicle Spear, Rock Blast, Tail Slap, Bullet Seed, Double Slap
