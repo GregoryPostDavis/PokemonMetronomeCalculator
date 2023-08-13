@@ -4,15 +4,16 @@ import pypokedex
 
 
 class Move:
-    def __init__(self, name, moveType, power, accuracy):
+    def __init__(self, name, moveType, moveCat, power, accuracy):
         self.name = name
         self.moveType = moveType
+        self.category = moveCat
         self.power = power
         self.accuracy = accuracy
 
 
 class Pokemon:
-    def __init__(self, name, hpEV, atkEV, defEV, spaEV, spdEV, speEV, nature, currentHP, ability):
+    def __init__(self, name, level, hpEV, atkEV, defEV, spaEV, spdEV, speEV, nature, currentHP, ability):
 
         # Nature Things
         atkMod = 1
@@ -71,7 +72,7 @@ class Pokemon:
         # End Nature Things
 
         self.name = name
-        self.level = 100
+        self.level = level
         self.currentHP = currentHP
         self.hpE = hpEV
         self.hpI = 31
@@ -134,15 +135,17 @@ AutoCrit = ["Flower Trick", "Frost Breath", "Storm Throw", "Surging Strikes", "W
 NatureList = ["hardy", "lonely", "brave", "adamant", "naughty", "bold", "docile", "relaxed", "impish", "lax", "timid",
               "hasty", "serious", "jolly", "naive", "modest", "mild", "quiet", "bashful", "rash", "calm", "sassy",
               "gentle", "careful", "quirky"]
-Bulletproof = ["acid spray", "aura sphere", "barrage", "beak blast", "bullet seed", "egg bomb", "electro ball", "energy ball", "focus blast", "gyro ball", "ice ball", "magnet bomb", "mist ball", "mud bomb", "octazooka", "pollen puff", "pyro ball","rock blast", "rock wrecker","searing shot","seed bomb","shadow ball","sludge bomb","weather bomb","zap cannon"]
-Soundproof = ["boomburst", "bug buzz", "chatter", "clanging scales", "clangorous soul", "clangorous soulblaze", "confide", "disarming voice", "echoed voice", "eerie spell", "grass whistle", "growl", "heal bell", "howl", "hyper voice", "metal sound" ,"noble roar", "overdrive", "parting shot","perish song", "relic song", "roar", "screech", "shadow panic", "sing", "snarl", "snore", "sparkling aria", "supersonic", "torch song", "uproar"]
+Bulletproof = ["acid spray", "aura sphere", "barrage", "beak blast", "bullet seed", "egg bomb", "electro ball",
+               "energy ball", "focus blast", "gyro ball", "ice ball", "magnet bomb", "mist ball", "mud bomb", "octazooka", "pollen puff", "pyro ball","rock blast", "rock wrecker","searing shot","seed bomb","shadow ball","sludge bomb","weather bomb","zap cannon"]
+Soundproof = ["boomburst", "bug buzz", "chatter", "clanging scales", "clangorous soul", "clangorous soulblaze",
+              "confide", "disarming voice", "echoed voice", "eerie spell", "grass whistle", "growl", "heal bell", "howl", "hyper voice", "metal sound" ,"noble roar", "overdrive", "parting shot","perish song", "relic song", "roar", "screech", "shadow panic", "sing", "snarl", "snore", "sparkling aria", "supersonic", "torch song", "uproar"]
 Damp = ["explosion", "self-destruct", "mind blown", "misty explosion"]
 TypeImmune = dict(levitate = "ground", voltabsorb = "electric", waterabsorb = "water", lightningrod = "electric",
                   stormdrain = "water",eartheater = "ground", flashfire = "fire", motordrive = "electric",
-                  dryskin = "water", sapsipper = "grass", )
-
+                  dryskin = "water", sapsipper = "grass")
 TypeList = ["Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", "Ground",
             "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"]
+MoveList = []
 
 normal = dict(normal=1, fire=1, water=1, grass=1, bug=1, ice=1, electric=1, flying=1, ground=1, rock=.5, steel=.5,
               fairy=1, dragon=1, psychic=1, dark=1, ghost=0, fighting=1, poison=1)
@@ -194,8 +197,11 @@ def fillBannedMoves():
     pass
 
 
-def readMoves():
-    pass
+def readMoves(path):
+    with open(path, 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            MoveList.append(Move(row[0], row[1], row[2], row[3], row[4]))
 
 
 def getTypeMatchups(pokemon):
@@ -227,27 +233,19 @@ def getTypeMatchups(pokemon):
             Error.append((entry, Modifier))
         Modifier = 1
 
-    # print("Immune:", Immune)
-    # print("Quarter:", Quarter)
-    # print("Half:", Half)
-    # print("Neutral:", Neutral)
-    # print("Double:", Double)
-    # print("Quad:", Quad)
-    # print("Error:", Error)
-
     return Quarter, Half, Neutral, Double, Quad, Immune, Error
 
 
-# Get Pokemon
+# Get Pokemon A
 while True:
     try:
         userIn = input("Enter a Pokemon: ").lower()
         pkmnA = pypokedex.get(name=userIn)
         break
-    except pypokedex.PyPokedexHTTPError:
+    except:
         print("Something went wrong, try again ")
 
-# Get Level
+# Get Level A
 while True:
     try:
         pkmnAlvl = input("Please Enter the Pokemon's Level ")
@@ -259,7 +257,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get HP EVs
+# Get HP EVs A
 while True:
     try:
         pkmnAhp = input("Please Enter the HP EVs ")
@@ -271,7 +269,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Attack EVs
+# Get Attack EVs A
 while True:
     try:
         pkmnAatk = input("Please Enter the Attack EVs ")
@@ -283,7 +281,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Defense EVs
+# Get Defense EVs A
 while True:
     try:
         pkmnAdef = input("Please Enter the Defense EVs ")
@@ -295,7 +293,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Special Attack EVs
+# Get Special Attack EVs A
 while True:
     try:
         pkmnAspa = input("Please Enter the Special Attack EVs ")
@@ -307,7 +305,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Special Defense EVs
+# Get Special Defense EVs A
 while True:
     try:
         pkmnAspd = input("Please Enter the Special Defense EVs ")
@@ -319,7 +317,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Speed EVs
+# Get Speed EVs A
 while True:
     try:
         pkmnAspe = input("Please Enter the Speed EVs ")
@@ -331,7 +329,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Current HP
+# Get Current HP A
 while True:
     try:
         currHP = input("Please Enter the Current HP ")
@@ -344,7 +342,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Nature
+# Get Nature A
 while True:
     pkmnAnat = input("Please Enter the Nature ").lower()
     if pkmnAnat in NatureList:
@@ -352,11 +350,12 @@ while True:
     else:
         print("No such nature exists")
 
-# Get Ability
+# Get Ability A
 while True:
     abilityA = input("Please Enter the Ability ").lower()
+    break
 
-pokemonA = Pokemon(userIn, pkmnAhp, pkmnAatk, pkmnAdef, pkmnAspa, pkmnAspd, pkmnAspe, pkmnAnat, currHP, abilityA)
+pokemonA = Pokemon(userIn, pkmnAlvl, pkmnAhp, pkmnAatk, pkmnAdef, pkmnAspa, pkmnAspd, pkmnAspe, pkmnAnat, currHP, abilityA)
 
 print(pokemonA.name)
 print(pokemonA.HP)
@@ -366,16 +365,16 @@ print(pokemonA.SPA)
 print(pokemonA.SPD)
 print(pokemonA.SPE)
 
-# Get Pokemon
+# Get Pokemon B
 while True:
     try:
         userIn = input("Enter a Pokemon: ").lower()
         pkmnB = pypokedex.get(name=userIn)
         break
-    except pypokedex.PyPokedexHTTPError:
+    except:
         print("Something went wrong, try again ")
 
-# Get Level
+# Get Level B
 while True:
     try:
         pkmnBlvl = input("Please Enter the Pokemon's Level ")
@@ -387,7 +386,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get HP EVs
+# Get HP EVs B
 while True:
     try:
         pkmnBhp = input("Please Enter the HP EVs ")
@@ -399,7 +398,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Attack EVs
+# Get Attack EVs B
 while True:
     try:
         pkmnBatk = input("Please Enter the Attack EVs ")
@@ -411,7 +410,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Defense EVs
+# Get Defense EVs B
 while True:
     try:
         pkmnBdef = input("Please Enter the Defense EVs ")
@@ -423,7 +422,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Special Attack EVs
+# Get Special Attack EVs B
 while True:
     try:
         pkmnBspa = input("Please Enter the Special Attack EVs ")
@@ -435,7 +434,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Special Defense EVs
+# Get Special Defense EVs B
 while True:
     try:
         pkmnBspd = input("Please Enter the Special Defense EVs ")
@@ -447,7 +446,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Speed EVs
+# Get Speed EVs B
 while True:
     try:
         pkmnBspe = input("Please Enter the Speed EVs ")
@@ -459,7 +458,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Current HP
+# Get Current HP Percentage B
 while True:
     try:
         currHPB = input("Please Enter the Current HP Percentage ")
@@ -470,7 +469,7 @@ while True:
     except ValueError:
         print("Error")
 
-# Get Nature
+# Get Nature B
 while True:
     pkmnBnat = input("Please Enter the Nature ").lower()
     if pkmnBnat in NatureList:
@@ -478,11 +477,12 @@ while True:
     else:
         print("No such nature exists")
 
-# Get Ability
+# Get Ability B
 while True:
     abilityB = input("Please Enter the Ability ").lower()
+    break
 
-pokemonB = Pokemon(userIn, pkmnBhp, pkmnBatk, pkmnBdef, pkmnBspa, pkmnBspd, pkmnBspe, pkmnBnat, currHPB, abilityB)
+pokemonB = Pokemon(userIn, pkmnBlvl, pkmnBhp, pkmnBatk, pkmnBdef, pkmnBspa, pkmnBspd, pkmnBspe, pkmnBnat, currHPB, abilityB)
 
 print(pokemonB.name)
 print(pokemonB.HP)
@@ -491,3 +491,10 @@ print(pokemonB.DEF)
 print(pokemonB.SPA)
 print(pokemonB.SPD)
 print(pokemonB.SPE)
+
+readMoves("PokemonMoves.csv")
+
+# for moves in MoveList:
+#     print(moves.name, moves.moveType, moves.category, moves.power, moves.accuracy)
+
+
