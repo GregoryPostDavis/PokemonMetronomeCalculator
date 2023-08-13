@@ -1,0 +1,3 @@
+https://github.com/arnavb/pypokedex
+https://bulbapedia.bulbagarden.net/wiki/Damage
+https://bulbapedia.bulbagarden.net/wiki/Stat#Permanent_stats
