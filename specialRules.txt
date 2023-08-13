@@ -1,0 +1,4 @@
+Crush Grip: Round[120 x (Target Current HP/Target Max HP)]
+Endeavor: HP = min(User HP, Target HP)
+Final Gambit: Target HP = Target HP - User HP
+Gyro Ball: BP = min(150, 25*TargetSpeed/UserSpeed +1) but not less than 1
