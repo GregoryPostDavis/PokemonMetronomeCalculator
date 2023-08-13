@@ -182,10 +182,6 @@ def readMoves():
     pass
 
 
-def calculateDamageModifier(moveType, types):
-    pass
-
-
 def getTypeMatchups(pokemon):
     Quarter = []
     Half = []
