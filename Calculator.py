@@ -1,7 +1,9 @@
 import csv
 import math
 import pypokedex
-from pypokedex.exceptions import *
+# from pypokedex import pokemon
+# from pypokedex.exceptions import *
+# from pypokedex import *
 
 
 
@@ -87,17 +89,17 @@ class Pokemon:
         self.spdI = 31
         self.speE = speEV
         self.speI = 31
-        self.pokemon = pypokedex.get(name=self.name)
-        self.types = pokemon.types
-        self.quarter, self.half, self.neutral, self.double, self.quad, self.immune, self.error = getTypeMatchups(pokemon)
+        self.pkmn = pypokedex.get(name=self.name)
+        self.types = self.pkmn.types
+        self.quarter, self.half, self.neutral, self.double, self.quad, self.immune, self.error = getTypeMatchups(self.pkmn)
 
         #Figure Out Stats (Pre Stat Buffs/Nerfs)
-        self.HP = math.floor((((2 * pokemon.base_stats.hp + self.hpI + (math.floor(self.hpE / 4))) * self.level) / 100) + self.level + 10)
-        self.ATK = math.floor(((((2 * pokemon.base_stats.attack + self.atkI + (math.floor(self.atkE / 4))) * self.level) / 100) + 5) * atkMod)
-        self.DEF = math.floor(((((2 * pokemon.base_stats.defense + self.defI + (math.floor(self.defE / 4))) * self.level) / 100) + 5) * defMod)
-        self.SPA = math.floor(((((2 * pokemon.base_stats.sp_atk + self.spaI + (math.floor(self.spaE / 4))) * self.level) / 100) + 5) * spaMod)
-        self.SPD = math.floor(((((2 * pokemon.base_stats.sp_def + self.spdI + (math.floor(self.spdE / 4))) * self.level) / 100) + 5) * spdMod)
-        self.SPE = math.floor(((((2 * pokemon.base_stats.speed + self.speI + (math.floor(self.speE / 4))) * self.level) / 100) + 5) * speMod)
+        self.HP = math.floor((((2 * self.pkmn.base_stats.hp + self.hpI + (math.floor(self.hpE / 4))) * self.level) / 100) + self.level + 10)
+        self.ATK = math.floor(((((2 * self.pkmn.base_stats.attack + self.atkI + (math.floor(self.atkE / 4))) * self.level) / 100) + 5) * atkMod)
+        self.DEF = math.floor(((((2 * self.pkmn.base_stats.defense + self.defI + (math.floor(self.defE / 4))) * self.level) / 100) + 5) * defMod)
+        self.SPA = math.floor(((((2 * self.pkmn.base_stats.sp_atk + self.spaI + (math.floor(self.spaE / 4))) * self.level) / 100) + 5) * spaMod)
+        self.SPD = math.floor(((((2 * self.pkmn.base_stats.sp_def + self.spdI + (math.floor(self.spdE / 4))) * self.level) / 100) + 5) * spdMod)
+        self.SPE = math.floor(((((2 * self.pkmn.base_stats.speed + self.speI + (math.floor(self.speE / 4))) * self.level) / 100) + 5) * speMod)
 
 
 bannedMoves = ["After You", "Apple Acid", "Armor Cannon", "Assist", "Astral Barrage", "Aura Wheel", "Baneful Bunker",
@@ -125,6 +127,7 @@ bannedMoves = ["After You", "Apple Acid", "Armor Cannon", "Assist", "Astral Barr
 OHKO = ["Fissure", "Guillotine", "Horn Drill", "Sheer Cold"]
 NEVER = ["False Swipe", "Natures Madness", "Ruination", "Endeavor", "Super Fang"]
 AutoCrit = ["Flower Trick", "Frost Breath", "Storm Throw", "Surging Strikes", "Wicked Blow", "Zippy Zap"]
+NatureList = ["hardy","lonely","brave","adamant","naughty","bold","docile","relaxed","impish","lax","timid","hasty","serious","jolly","naive","modest","mild","quiet","bashful","rash","calm","sassy","gentle","careful","quirky"]
 
 TypeList = ["Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", "Ground",
             "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"]
@@ -223,10 +226,126 @@ def getTypeMatchups(pokemon):
     return Quarter, Half, Neutral, Double, Quad, Immune, Error
 
 
+#Get Pokemon
 while True:
     try:
         userIn = input("Enter a Pokemon: ").lower()
-        pokemon = pypokedex.get(name=userIn)
+        pkmnA = pypokedex.get(name=userIn)
         break
-    except PyPokedexHTTPError:
-        print("Something went wrong, try again")
+    except pypokedex.PyPokedexHTTPError:
+        print("Something went wrong, try again ")
+
+#Get Level
+while True:
+    try:
+        pkmnAlvl = input("Please Enter the Pokemon's Level ")
+        if int(pkmnAlvl) >= 1 and int(pkmnAlvl) <= 100:
+            pkmnAlvl = int(pkmnAlvl)
+            break
+        else:
+            print("Level fell outside of the allowed range ")
+    except ValueError:
+        print("Error")
+
+#Get HP EVs
+while True:
+    try:
+        pkmnAhp = input("Please Enter the HP EVs ")
+        if 0 <= int(pkmnAhp) <= 252:
+            pkmnAhp = int(pkmnAhp)
+            break
+        else:
+            print("EVs fell outside of the allowed range ")
+    except ValueError:
+        print("Error")
+
+#Get Attack EVs
+while True:
+    try:
+        pkmnAatk = input("Please Enter the Attack EVs ")
+        if 0 <= int(pkmnAatk) <= 252:
+            pkmnAatk = int(pkmnAatk)
+            break
+        else:
+            print("EVs fell outside of the allowed range ")
+    except ValueError:
+        print("Error")
+
+#Get Defense EVs
+while True:
+    try:
+        pkmnAdef = input("Please Enter the Defense EVs ")
+        if 0 <= int(pkmnAdef) <= 252:
+            pkmnAdef = int(pkmnAdef)
+            break
+        else:
+            print("EVs fell outside of the allowed range ")
+    except ValueError:
+        print("Error")
+
+#Get Special Attack EVs
+while True:
+    try:
+        pkmnAspa = input("Please Enter the Special Attack EVs ")
+        if 0 <= int(pkmnAspa) <= 252:
+            pkmnAspa = int(pkmnAspa)
+            break
+        else:
+            print("EVs fell outside of the allowed range ")
+    except ValueError:
+        print("Error")
+
+#Get Special Defense EVs
+while True:
+    try:
+        pkmnAspd = input("Please Enter the Special Defense EVs ")
+        if 0 <= int(pkmnAspd) <= 252:
+            pkmnAspd = int(pkmnAspd)
+            break
+        else:
+            print("EVs fell outside of the allowed range ")
+    except ValueError:
+        print("Error")
+
+#Get Speed EVs
+while True:
+    try:
+        pkmnAspe = input("Please Enter the Speed EVs ")
+        if 0 <= int(pkmnAspe) <= 252:
+            pkmnAspe = int(pkmnAspe)
+            break
+        else:
+            print("EVs fell outside of the allowed range ")
+    except ValueError:
+        print("Error")
+
+#Get Current HP
+while True:
+    try:
+        currHP = input("Please Enter the Current HP ")
+        if 0 <= int(currHP) <= math.floor((((2 * int(pkmnA.base_stats.hp) + 31 + (math.floor(int(pkmnAhp) / 4))) * int(pkmnAlvl)) / 100) + int(pkmnAlvl) + 10):
+            break
+        else:
+            print("HP fell outside of the allowed range ")
+    except ValueError:
+        print("Error")
+
+#Get Nature
+while True:
+    pkmnAnat = input("Please Enter the Nature ").lower()
+    if pkmnAnat in NatureList:
+        break
+    else:
+        print("No such nature exists")
+
+pokemonA = Pokemon(userIn, pkmnAhp, pkmnAatk, pkmnAdef, pkmnAspa, pkmnAspd, pkmnAspe, pkmnAnat, currHP)
+
+print(pokemonA.name)
+print(pokemonA.HP)
+print(pokemonA.ATK)
+print(pokemonA.DEF)
+print(pokemonA.SPA)
+print(pokemonA.SPD)
+print(pokemonA.SPE)
+
+
