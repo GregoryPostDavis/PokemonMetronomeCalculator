@@ -1,4 +1,5 @@
 import csv
+import math
 import pypokedex
 
 
@@ -11,23 +12,91 @@ class Move:
 
 
 class Pokemon:
-    def __init__(self, name, level, hpEV, atkEV, defEV, spaEV, spdEV, speEV, hpIV, atkIV, defIV, spaIV, spdIV, speIV):
+    def __init__(self, name, hpEV, atkEV, defEV, spaEV, spdEV, speEV, nature):
+
+        #Nature Things
+        atkMod = 1
+        defMod = 1
+        spaMod = 1
+        spdMod = 1
+        speMod = 1
+
+        NoChange = ["hardy", "docile", "bashful", "quirky", "serious"]
+        atkUp = ["lonely","adamant","naughty","brave"]
+        atkDw = ["bold","modest","calm","timid"]
+        defUp = ["bold","impish","lax","relaxed"]
+        defDw = ["lonely","mild","gentle","hasty"]
+        spaUp = ["modest","mild","rash","quiet"]
+        spaDw = ["adamant","impish","careful","jolly"]
+        spdUp = ["calm","gentle","careful","sassy"]
+        spdDw = ["naughty","lax","rash","naive"]
+        speUp = ["timid","hasty","jolly","naive"]
+        speDw = ["brave","relaxed","quiet","sassy"]
+
+        if nature in atkUp:
+            atkMod = 1.1
+        elif nature in atkDw:
+            atkMod = 0.9
+        else:
+            atkMod = 1
+
+        if nature in defUp:
+            defMod = 1.1
+        elif nature in defDw:
+            defMod = 0.9
+        else:
+            defMod = 1
+
+        if nature in spaUp:
+            spaMod = 1.1
+        elif nature in spaDw:
+            spaMod = 0.9
+        else:
+            spaMod = 1
+
+        if nature in spdUp:
+            spdMod = 1.1
+        elif nature in spdDw:
+            spdMod = 0.9
+        else:
+            spdMod = 1
+
+        if nature in speUp:
+            speMod = 1.1
+        elif nature in speDw:
+            speMod = 0.9
+        else:
+            speMod = 1
+
+    #End Nature Things
+
         self.name = name
-        self.level = level
+        self.level = 100
         self.hpE = hpEV
-        self.hpI = hpIV
+        self.hpI = 31
         self.atkE = atkEV
-        self.atkI = atkIV
+        self.atkI = 31
         self.defE = defEV
-        self.defI = defIV
+        self.defI = 31
         self.spaE = spaEV
-        self.spaI = spaIV
+        self.spaI = 31
         self.spdE = spdEV
-        self.spdI = spdIV
+        self.spdI = 31
         self.speE = speEV
-        self.speI = speIV
+        self.speI = 31
         self.pokemon = pypokedex.get(name=self.name)
         self.types = pokemon.types
+        self.quarter, self.half, self.neutral, self.double, self.quad, self.immune, self.error = getTypeMatchups(pokemon)
+
+
+        #Figure Out Stats (Pre Stat Buffs/Nerfs)
+        self.HP = math.floor((((2 * pokemon.base_stats.hp + self.hpI + (math.floor(self.hpE / 4))) * self.level) / 100) + self.level + 10)
+        self.ATK = math.floor(((((2 * pokemon.base_stats.attack + self.atkI + (math.floor(self.atkE / 4))) * self.level) / 100) + 5) * atkMod)
+        self.DEF = math.floor(((((2 * pokemon.base_stats.defense + self.defI + (math.floor(self.defE / 4))) * self.level) / 100) + 5) * defMod)
+        self.SPA = math.floor(((((2 * pokemon.base_stats.sp_atk + self.spaI + (math.floor(self.spaE / 4))) * self.level) / 100) + 5) * spaMod)
+        self.SPD = math.floor(((((2 * pokemon.base_stats.sp_def + self.spdI + (math.floor(self.spdE / 4))) * self.level) / 100) + 5) * spdMod)
+        self.SPE = math.floor(((((2 * pokemon.base_stats.speed + self.speI + (math.floor(self.speE / 4))) * self.level) / 100) + 5) * speMod)
+
 
 
 bannedMoves = ["After You", "Apple Acid", "Armor Cannon", "Assist", "Astral Barrage", "Aura Wheel", "Baneful Bunker",
