@@ -1,6 +1,8 @@
 import csv
 import math
 import pypokedex
+from pypokedex.exceptions import *
+
 
 
 class Move:
@@ -12,7 +14,7 @@ class Move:
 
 
 class Pokemon:
-    def __init__(self, name, hpEV, atkEV, defEV, spaEV, spdEV, speEV, nature):
+    def __init__(self, name, hpEV, atkEV, defEV, spaEV, spdEV, speEV, nature, currentHP):
 
         #Nature Things
         atkMod = 1
@@ -72,6 +74,7 @@ class Pokemon:
 
         self.name = name
         self.level = 100
+        self.currentHP = currentHP
         self.hpE = hpEV
         self.hpI = 31
         self.atkE = atkEV
@@ -88,7 +91,6 @@ class Pokemon:
         self.types = pokemon.types
         self.quarter, self.half, self.neutral, self.double, self.quad, self.immune, self.error = getTypeMatchups(pokemon)
 
-
         #Figure Out Stats (Pre Stat Buffs/Nerfs)
         self.HP = math.floor((((2 * pokemon.base_stats.hp + self.hpI + (math.floor(self.hpE / 4))) * self.level) / 100) + self.level + 10)
         self.ATK = math.floor(((((2 * pokemon.base_stats.attack + self.atkI + (math.floor(self.atkE / 4))) * self.level) / 100) + 5) * atkMod)
@@ -96,7 +98,6 @@ class Pokemon:
         self.SPA = math.floor(((((2 * pokemon.base_stats.sp_atk + self.spaI + (math.floor(self.spaE / 4))) * self.level) / 100) + 5) * spaMod)
         self.SPD = math.floor(((((2 * pokemon.base_stats.sp_def + self.spdI + (math.floor(self.spdE / 4))) * self.level) / 100) + 5) * spdMod)
         self.SPE = math.floor(((((2 * pokemon.base_stats.speed + self.speI + (math.floor(self.speE / 4))) * self.level) / 100) + 5) * speMod)
-
 
 
 bannedMoves = ["After You", "Apple Acid", "Armor Cannon", "Assist", "Astral Barrage", "Aura Wheel", "Baneful Bunker",
@@ -219,17 +220,13 @@ def getTypeMatchups(pokemon):
     # print("Quad:", Quad)
     # print("Error:", Error)
 
-    return Immune, Quarter, Half, Neutral, Double, Quad, Error
+    return Quarter, Half, Neutral, Double, Quad, Immune, Error
 
 
-userIN = input("pokemon name: ")
-pokemon = pypokedex.get(name=userIN)
-# print(pokemon.name, pokemon.types)
-a,b,c,d,e,f,g = getTypeMatchups(pokemon)
-print(a)
-print(b)
-print(c)
-print(d)
-print(e)
-print(f)
-print(g)
+while True:
+    try:
+        userIn = input("Enter a Pokemon: ").lower()
+        pokemon = pypokedex.get(name=userIn)
+        break
+    except PyPokedexHTTPError:
+        print("Something went wrong, try again")
