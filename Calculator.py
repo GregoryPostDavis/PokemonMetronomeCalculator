@@ -8,8 +8,8 @@ class Move:
         self.name = name
         self.moveType = moveType
         self.category = moveCat
-        self.power = power
-        self.accuracy = accuracy
+        self.power = int(power)
+        self.accuracy = int(accuracy)
 
 
 class Pokemon:
@@ -91,6 +91,7 @@ class Pokemon:
         self.quarter, self.half, self.neutral, self.double, self.quad, self.immune, self.error = getTypeMatchups(
             self.pkmn)
         self.ability = ability
+        self.status = "healthy"
 
         # Figure Out Stats (Pre Stat Buffs/Nerfs)
         self.HP = math.floor((((2 * self.pkmn.base_stats.hp + self.hpI + (
@@ -139,6 +140,11 @@ Bulletproof = ["acid spray", "aura sphere", "barrage", "beak blast", "bullet see
                "energy ball", "focus blast", "gyro ball", "ice ball", "magnet bomb", "mist ball", "mud bomb", "octazooka", "pollen puff", "pyro ball","rock blast", "rock wrecker","searing shot","seed bomb","shadow ball","sludge bomb","weather bomb","zap cannon"]
 Soundproof = ["boomburst", "bug buzz", "chatter", "clanging scales", "clangorous soul", "clangorous soulblaze",
               "confide", "disarming voice", "echoed voice", "eerie spell", "grass whistle", "growl", "heal bell", "howl", "hyper voice", "metal sound" ,"noble roar", "overdrive", "parting shot","perish song", "relic song", "roar", "screech", "shadow panic", "sing", "snarl", "snore", "sparkling aria", "supersonic", "torch song", "uproar"]
+MultiHit = ["arm thrust", "barrage", "bone rush", "bullet seed", "comet punch", "double slap", "fury attack",
+            "fury swipes", "icicle spear", "pin missile", "rock blast", "scale shot", "spike cannon", "tail slap", "water shuriken"]
+FixedMulti = ["bonemerang", "double hit", "double iron bash", "double kick", "dragon darts", "dual chop",
+              "dual wingbeat", "gear grind", "surging strikes", "triple dive", "twin beam", "twin needle"]
+AccuracyMulti = ["triple axel","triple kick","population bomb"]
 Damp = ["explosion", "self-destruct", "mind blown", "misty explosion"]
 TypeImmune = dict(levitate = "ground", voltabsorb = "electric", waterabsorb = "water", lightningrod = "electric",
                   stormdrain = "water",eartheater = "ground", flashfire = "fire", motordrive = "electric",
@@ -193,15 +199,21 @@ def physicalMoveCalc(Move):
     pass
 
 
-def fillBannedMoves():
-    pass
+def removeBannedMoves():
+    for entries in MoveList:
+        if entries.name in bannedMoves:
+            MoveList.remove(entries)
 
 
 def readMoves(path):
+    times = 0
     with open(path, 'r') as f:
         reader = csv.reader(f)
         for row in reader:
-            MoveList.append(Move(row[0], row[1], row[2], row[3], row[4]))
+            if times == 0:
+                times = 1
+            else:
+                MoveList.append(Move(row[0], row[1], row[2], row[3], row[4]))
 
 
 def getTypeMatchups(pokemon):
@@ -234,6 +246,42 @@ def getTypeMatchups(pokemon):
         Modifier = 1
 
     return Quarter, Half, Neutral, Double, Quad, Immune, Error
+
+def getDamageRolls(user, move, target):
+    DamageRolls = []
+
+    if move.name in OHKO:
+        for x in range(16):
+            DamageRolls[x] = 9999
+        return DamageRolls
+
+    if move.category.lower() == "physical":
+        offense = user.ATK
+        defense = target.DEF
+    elif move.category.lower() =="special" and move.name.lower() is not "psyshock":
+        offense = user.SPA
+        defense = target.SPD
+    elif move.category.lower() =="special" and move.name.lower() is "psyshock":
+        offense = user.SPA
+        defense = target.DEF
+    elif move.category.lower() == "status":
+        for x in range(16):
+            DamageRolls[x] = 0
+        return DamageRolls
+
+
+    #Actual Damage being Calculated
+    for random in range(85, 101):
+        levelBased = (2*user.level/5)+2
+        part2 = (move.power * offense / defense)
+        mainMultiplier = (levelBased * part2/50)+2
+        Other = 1
+        Burn = 1
+
+
+
+
+
 
 
 # Get Pokemon A
@@ -483,6 +531,9 @@ while True:
     break
 
 pokemonB = Pokemon(userIn, pkmnBlvl, pkmnBhp, pkmnBatk, pkmnBdef, pkmnBspa, pkmnBspd, pkmnBspe, pkmnBnat, currHPB, abilityB)
+pokemonB.currentHP = int(math.floor((((2 * pokemonB.pkmn.base_stats.hp + pokemonB.hpI + (
+            math.floor(pokemonB.hpE / 4))) * pokemonB.level) / 100) + pokemonB.level + 10) * currHPB/100)
+
 
 print(pokemonB.name)
 print(pokemonB.HP)
@@ -493,8 +544,10 @@ print(pokemonB.SPD)
 print(pokemonB.SPE)
 
 readMoves("PokemonMoves.csv")
+removeBannedMoves()
 
-# for moves in MoveList:
-#     print(moves.name, moves.moveType, moves.category, moves.power, moves.accuracy)
+for moves in MoveList:
+    if moves.power == -1 and moves.name not in OHKO:
+        print(moves.name, moves.moveType, moves.category, moves.power, moves.accuracy)
 
 
