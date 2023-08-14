@@ -8,3 +8,7 @@ Gyro Ball: BP = min(150, 25*TargetSpeed/UserSpeed +1) but not less than 1
 Thick Fat Fire/Ice moves /2 dmg
 heatproof fire/2dmg
 dry skin fire*2 dmg
+
+
+deal with scappy at some point
+maybe temporarily remove "ghost" from types and re add after scappy is done

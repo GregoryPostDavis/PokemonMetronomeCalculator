@@ -137,18 +137,25 @@ NatureList = ["hardy", "lonely", "brave", "adamant", "naughty", "bold", "docile"
               "hasty", "serious", "jolly", "naive", "modest", "mild", "quiet", "bashful", "rash", "calm", "sassy",
               "gentle", "careful", "quirky"]
 Bulletproof = ["acid spray", "aura sphere", "barrage", "beak blast", "bullet seed", "egg bomb", "electro ball",
-               "energy ball", "focus blast", "gyro ball", "ice ball", "magnet bomb", "mist ball", "mud bomb", "octazooka", "pollen puff", "pyro ball","rock blast", "rock wrecker","searing shot","seed bomb","shadow ball","sludge bomb","weather bomb","zap cannon"]
+               "energy ball", "focus blast", "gyro ball", "ice ball", "magnet bomb", "mist ball", "mud bomb",
+               "octazooka", "pollen puff", "pyro ball", "rock blast", "rock wrecker", "searing shot", "seed bomb",
+               "shadow ball", "sludge bomb", "weather bomb", "zap cannon"]
 Soundproof = ["boomburst", "bug buzz", "chatter", "clanging scales", "clangorous soul", "clangorous soulblaze",
-              "confide", "disarming voice", "echoed voice", "eerie spell", "grass whistle", "growl", "heal bell", "howl", "hyper voice", "metal sound" ,"noble roar", "overdrive", "parting shot","perish song", "relic song", "roar", "screech", "shadow panic", "sing", "snarl", "snore", "sparkling aria", "supersonic", "torch song", "uproar"]
+              "confide", "disarming voice", "echoed voice", "eerie spell", "grass whistle", "growl", "heal bell",
+              "howl", "hyper voice", "metal sound", "noble roar", "overdrive", "parting shot", "perish song",
+              "relic song", "roar", "screech", "shadow panic", "sing", "snarl", "snore", "sparkling aria", "supersonic",
+              "torch song", "uproar"]
 MultiHit = ["arm thrust", "barrage", "bone rush", "bullet seed", "comet punch", "double slap", "fury attack",
-            "fury swipes", "icicle spear", "pin missile", "rock blast", "scale shot", "spike cannon", "tail slap", "water shuriken"]
+            "fury swipes", "icicle spear", "pin missile", "rock blast", "scale shot", "spike cannon", "tail slap",
+            "water shuriken"]
 FixedMulti = ["bonemerang", "double hit", "double iron bash", "double kick", "dragon darts", "dual chop",
               "dual wingbeat", "gear grind", "surging strikes", "triple dive", "twin beam", "twin needle"]
-AccuracyMulti = ["triple axel","triple kick","population bomb"]
+AccuracyMulti = ["triple axel", "triple kick", "population bomb"]
 Damp = ["explosion", "self-destruct", "mind blown", "misty explosion"]
-TypeImmune = dict(levitate = "ground", voltabsorb = "electric", waterabsorb = "water", lightningrod = "electric",
-                  stormdrain = "water",eartheater = "ground", flashfire = "fire", motordrive = "electric",
-                  dryskin = "water", sapsipper = "grass")
+TypeImmune = dict(levitate="ground", voltabsorb="electric", waterabsorb="water", lightningrod="electric",
+                  stormdrain="water", eartheater="ground", flashfire="fire", motordrive="electric",
+                  dryskin="water", sapsipper="grass")
+IgnoreAbilities = ["mold breaker", "mycelium might", "teravolt", "turboblaze"]
 TypeList = ["Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", "Ground",
             "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"]
 MoveList = []
@@ -247,8 +254,28 @@ def getTypeMatchups(pokemon):
 
     return Quarter, Half, Neutral, Double, Quad, Immune, Error
 
-def getDamageRolls(user, move, target):
-    DamageRolls = []
+
+def getDamageRolls(user, move, target, currentWeather, glaive):
+    DamageRolls = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+
+    #print(move.moveType)
+    if move.moveType in user.quarter:
+        TypeMatchup = .25
+    elif move.moveType in user.half:
+        TypeMatchup = .5
+    elif move.moveType in user.double:
+        TypeMatchup = 2
+    elif move.moveType in user.quad:
+        TypeMatchup = 4
+    elif move.moveType in user.immune:
+        TypeMatchup = 0
+    else:
+        TypeMatchup = 1
+
+    if target.ability in TypeImmune:
+        if TypeImmune.get(target.ability).lower() == move.moveType and user.ability not in IgnoreAbilities:
+            TypeMatchup = 0
+            print("immune through ability")
 
     if move.name in OHKO:
         for x in range(16):
@@ -258,10 +285,12 @@ def getDamageRolls(user, move, target):
     if move.category.lower() == "physical":
         offense = user.ATK
         defense = target.DEF
-    elif move.category.lower() =="special" and move.name.lower() is not "psyshock":
+        if currentWeather == "snow" and "ice" in target.types:
+            defense = defense * 1.5
+    elif move.category.lower() == "special" and move.name.lower() != "psyshock":
         offense = user.SPA
         defense = target.SPD
-    elif move.category.lower() =="special" and move.name.lower() is "psyshock":
+    elif move.category.lower() == "special" and move.name.lower() == "psyshock":
         offense = user.SPA
         defense = target.DEF
     elif move.category.lower() == "status":
@@ -269,19 +298,56 @@ def getDamageRolls(user, move, target):
             DamageRolls[x] = 0
         return DamageRolls
 
-
-    #Actual Damage being Calculated
+    # Actual Damage being Calculated
     for random in range(85, 101):
-        levelBased = (2*user.level/5)+2
+        levelBased = ((2 * user.level / 5) + 2)
         part2 = (move.power * offense / defense)
-        mainMultiplier = (levelBased * part2/50)+2
+        mainMultiplier = (levelBased * part2 / 50)
+
         Other = 1
-        Burn = 1
 
+        Targets = 1
 
+        PB = 1  # This will be used for Parental Bond SOON(ish)
 
+        if user.status.lower() == "burn" and move.category.lower() == "physical" and user.ability.lower() != "guts":
+            Burn = .5
+        else:
+            Burn = 1
 
+        if user.ability == "cloud nine" or user.ability == "air lock" or target.ability == "cloud nine" or target.ability == "air lock":
+            Weather = 1
+        elif currentWeather.lower() == "rain":
+            if move.moveType.lower() == "water":
+                Weather = 1.5
+            elif move.moveType.lower() == "fire":
+                Weather = .5
+        elif currentWeather.lower() == "sun":
+            if move.name.lower() == "hydro steam" or move.moveType.lower() == "fire":
+                Weather = 1.5
+            elif move.moveType.lower() == "water":
+                Weather = .5
+        elif currentWeather.lower() == "sand" or currentWeather.lower() == "snow":
+            if move.name.lower() == "solar beam" or move.name.lower() == "solar blade":
+                Weather = .5
+        else:
+            Weather = 1
 
+        if move.moveType not in user.types:
+            STAB = 1
+        elif user.ability.lower == "adaptability":
+            STAB = 2
+        else:
+            STAB = 1.5
+
+        Critical = 1  # Deal with Crits Later
+
+        ThisRoll = math.floor(
+            mainMultiplier * Targets * PB * Weather * glaive * Critical * random/100 * STAB * TypeMatchup * Burn)
+        # print(mainMultiplier, Targets, PB, Weather, glaive, Critical, random/100, STAB, TypeMatchup, Burn, ThisRoll)
+        DamageRolls[random - 85] = ThisRoll
+
+    return DamageRolls
 
 
 # Get Pokemon A
@@ -383,7 +449,7 @@ while True:
         currHP = input("Please Enter the Current HP ")
         if 0 <= int(currHP) <= math.floor(
                 (((2 * int(pkmnA.base_stats.hp) + 31 + (math.floor(int(pkmnAhp) / 4))) * int(pkmnAlvl)) / 100) + int(
-                        pkmnAlvl) + 10):
+                    pkmnAlvl) + 10):
             break
         else:
             print("HP fell outside of the allowed range ")
@@ -403,15 +469,16 @@ while True:
     abilityA = input("Please Enter the Ability ").lower()
     break
 
-pokemonA = Pokemon(userIn, pkmnAlvl, pkmnAhp, pkmnAatk, pkmnAdef, pkmnAspa, pkmnAspd, pkmnAspe, pkmnAnat, currHP, abilityA)
+pokemonA = Pokemon(userIn, pkmnAlvl, pkmnAhp, pkmnAatk, pkmnAdef, pkmnAspa, pkmnAspd, pkmnAspe, pkmnAnat, currHP,
+                   abilityA)
 
-print(pokemonA.name)
-print(pokemonA.HP)
-print(pokemonA.ATK)
-print(pokemonA.DEF)
-print(pokemonA.SPA)
-print(pokemonA.SPD)
-print(pokemonA.SPE)
+# print(pokemonA.name)
+# print(pokemonA.HP)
+# print(pokemonA.ATK)
+# print(pokemonA.DEF)
+# print(pokemonA.SPA)
+# print(pokemonA.SPD)
+# print(pokemonA.SPE)
 
 # Get Pokemon B
 while True:
@@ -530,24 +597,57 @@ while True:
     abilityB = input("Please Enter the Ability ").lower()
     break
 
-pokemonB = Pokemon(userIn, pkmnBlvl, pkmnBhp, pkmnBatk, pkmnBdef, pkmnBspa, pkmnBspd, pkmnBspe, pkmnBnat, currHPB, abilityB)
-pokemonB.currentHP = int(math.floor((((2 * pokemonB.pkmn.base_stats.hp + pokemonB.hpI + (
-            math.floor(pokemonB.hpE / 4))) * pokemonB.level) / 100) + pokemonB.level + 10) * currHPB/100)
+pokemonB = Pokemon(userIn, pkmnBlvl, pkmnBhp, pkmnBatk, pkmnBdef, pkmnBspa, pkmnBspd, pkmnBspe, pkmnBnat, currHPB,
+                   abilityB)
+pokemonB.currentHP = int(
+    ((int(pypokedex.get(name=userIn).base_stats.hp * 2 * 31 + math.floor(pkmnBhp/4)) * int(
+        pkmnBlvl) / 100) + int(pkmnBlvl) + 10) * (int(currHPB) / 100))
+varA =pypokedex.get(name=userIn).base_stats.hp
+varB =math.floor(pkmnBhp/4)
+varC =pkmnBlvl/100
+varD =pkmnBlvl+10
+pokemonB.currentHP = (((2*varA)+31+varB)*varC)+varD
+
+print(pypokedex.get(name=userIn).base_stats.hp, math.floor(pkmnBhp/4),pkmnBlvl/100, pkmnBlvl+10, int(currHPB)/100)
+print(pokemonB.currentHP)
 
 
-print(pokemonB.name)
-print(pokemonB.HP)
-print(pokemonB.ATK)
-print(pokemonB.DEF)
-print(pokemonB.SPA)
-print(pokemonB.SPD)
-print(pokemonB.SPE)
+# print(pokemonB.name)
+# print(pokemonB.HP)
+# print(pokemonB.ATK)
+# print(pokemonB.DEF)
+# print(pokemonB.SPA)
+# print(pokemonB.SPD)
+# print(pokemonB.SPE)
 
 readMoves("PokemonMoves.csv")
 removeBannedMoves()
 
+# for moves in MoveList:
+#     if moves.power == -1 and moves.name not in OHKO:
+#         print(moves.name, moves.moveType, moves.category, moves.power, moves.accuracy)
+
+KillingRolls = 0
+LosingRolls = 0
+
 for moves in MoveList:
-    if moves.power == -1 and moves.name not in OHKO:
-        print(moves.name, moves.moveType, moves.category, moves.power, moves.accuracy)
+    Rolls = getDamageRolls(pokemonA, moves, pokemonB, "none", 1)
+    for roll in Rolls:
+        if roll >= pokemonB.currentHP:
+            KillingRolls = KillingRolls +1
+            print(moves.name)
+        else:
+            LosingRolls = LosingRolls+1
 
+print("winning rolls", KillingRolls)
+print("losing rolls", LosingRolls)
 
+moonblast = Move("moonblast","fairy","special",95,100)
+Rolls = getDamageRolls(pokemonA, moonblast, pokemonB, "none", 1)
+print(Rolls)
+for roll in Rolls:
+    if roll >= pokemonB.currentHP:
+
+        print("Win", roll)
+    else:
+        print("Loss", roll)
