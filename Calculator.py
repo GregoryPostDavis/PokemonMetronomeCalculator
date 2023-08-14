@@ -111,14 +111,14 @@ class Pokemon:
 
 
 Testing = True
-testPokemonName = "slowking-galar"
+testPokemonName = "zapdos"
 testHpA = 252
 testAtkA = 0
-testDefA = 200
+testDefA = 0
 testSpaA = 252
 testSpdA = 0
 testSpeA = 0
-testCurrHpA = 394
+testCurrHpA = 100
 testNatureA = "modest"
 testAbilityA = "regenerator"
 
@@ -222,7 +222,7 @@ def physicalMoveCalc(Move):
 
 def removeBannedMoves():
     for entries in MoveList:
-        if entries.name in bannedMoves:
+        if entries.name.lower() in bannedMoves:
             MoveList.remove(entries)
 
 
@@ -235,6 +235,7 @@ def readMoves(path):
                 times = 1
             else:
                 MoveList.append(Move(row[0].lower(), row[1].lower(), row[2].lower(), row[3], row[4]))
+    removeBannedMoves()
 
 
 def getTypeMatchups(pokemon):
