@@ -91,7 +91,8 @@ class Pokemon:
 
         self.quarter, self.half, self.neutral, self.double, self.quad, self.immune, self.error = getTypeMatchups(
             self.pkmn)
-        self.ability = ability
+        temp = ability
+        self.ability = temp.replace(" ","")
         self.status = "healthy"
 
         # Figure Out Stats (Pre Stat Buffs/Nerfs)
@@ -110,38 +111,38 @@ class Pokemon:
 
 
 Testing = True
-testPokemonName = "Clefable"
+testPokemonName = "slowking-galar"
 testHpA = 252
 testAtkA = 0
 testDefA = 200
-testSpaA = 56
+testSpaA = 252
 testSpdA = 0
 testSpeA = 0
 testCurrHpA = 394
 testNatureA = "modest"
-testAbilityA = "magic guard"
+testAbilityA = "regenerator"
 
-bannedMoves = ["After You", "Apple Acid", "Armor Cannon", "Assist", "Astral Barrage", "Aura Wheel", "Baneful Bunker",
-               "Beak Blast", "Behemoth Bash", "Behemoth Blade", "Belch", "Bestow", "Blazing Torque", "Body Press",
-               "Branch Poke", "Breaking Swipe", "Celebrate", "Chatter", "Chilling Water", "Chilly Reception",
-               "Clangorous Soul", "Collision Course", "Combat Torque", "Comeuppance", "Copycat", "Counter", "Covet",
-               "Crafty Shield", "Decorate", "Destiny Bond", "Detect", "Diamond Storm", "Doodle", "Double Iron Bash",
-               "Double Shock", "Dragon Ascent", "Dragon Energy", "Drum Beating", "Dynamax Cannon", "Electro Drift",
-               "Endure", "Eternabeam", "False Surrender", "Feint", "Fiery Wrath", "Fillet Away", "Fleur Cannon",
-               "Focus Punch", "Follow Me", "Freeze Shock", "Freezing Glare", "Glacial Lance", "Grav Apple",
-               "Helping Hand", "Hold Hands", "Hyper Drill", "Hyperspace Fury", "HyperSspace Hole", "Ice Burn",
-               "Instruct", "Jet Punch", "Jungle Healing", "Kings Shield", "Life Dew", "Light of Ruin", "Make It Rain",
-               "Magical Torque", "Mat Block", "Me First", "Meteor Assault", "Mimic", "Mind Blown", "Mirror Coat",
-               "Mirror Move", "Moongeist Beam", "Nature Power", "Natures Madness", "Noxious Torque", "Obstruct",
-               "Order Up", "Origin Pulse", "Overdrive", "Photon Geyser", "Plasma Fists", "Population Bomb", "Pounce",
-               "Power Shift", "Precipice Blades", "Protect", "Pyro Ball", "Quash", "Quick Guard", "Rage Fist",
-               "Rage Powder", "Raging Bull", "Raging Fury", "Relic Song", "Revival Blessing", "Ruination",
-               "Salt Cure", "Secret Sword", "Shed Tail", "Shell Trap", "Silk Trap", "Sketch", "Snap Trap", "Snarl",
-               "Snatch", "Snore", "Snowscape", "Spectral Tief", "Spicy Extract", "Spiky Shield", "Spirit Break",
-               "Spotlight", "Steam Eruption", "Steel Beam", "Strange Steam", "Struggle", "Sunsteel Strike",
-               "Surging Strikes", "Switcheroo", "Techno Blast", "Thief", "Thousand Arrows", "Thousand Waves",
-               "Thunder Cage", "Thunderous Kick", "Tidy Up", "Trailblaze", "Transform", "Trick", "Twin Beam",
-               "V-create", "Wicked Blow", "Wicked Torque", "Wide Guard"]
+bannedMoves = ["after you", "apple acid", "armor cannon", "assist", "astral barrage", "aura wheel", "baneful bunker",
+               "beak blast", "behemoth bash", "behemoth blade", "belch", "bestow", "blazing torque", "body press",
+               "branch poke", "breaking swipe", "celebrate", "chatter", "chilling water", "chilly reception",
+               "clangorous soul", "collision course", "combat torque", "comeuppance", "copycat", "counter", "covet",
+               "crafty shield", "decorate", "destiny bond", "detect", "diamond storm", "doodle", "double iron bash",
+               "double shock", "dragon ascent", "dragon energy", "drum beating", "dynamax cannon", "electro drift",
+               "endure", "eternabeam", "false surrender", "feint", "fiery wrath", "fillet away", "fleur cannon",
+               "focus punch", "follow me", "freeze shock", "freezing glare", "glacial lance", "grav apple",
+               "helping hand", "hold hands", "hyper drill", "hyperspace fury", "hypersspace hole", "ice burn",
+               "instruct", "jet punch", "jungle healing", "kings shield", "life dew", "light of ruin", "make it rain",
+               "magical torque", "mat block", "me first", "meteor assault", "mimic", "mind blown", "mirror coat",
+               "mirror move", "moongeist beam", "nature power", "natures madness", "noxious torque", "obstruct",
+               "order up", "origin pulse", "overdrive", "photon geyser", "plasma fists", "population bomb", "pounce",
+               "power shift", "precipice blades", "protect", "pyro ball", "quash", "quick guard", "rage fist",
+               "rage powder", "raging bull", "raging fury", "relic song", "revival blessing", "ruination",
+               "salt cure", "secret sword", "shed tail", "shell trap", "silk trap", "sketch", "snap trap", "snarl",
+               "snatch", "snore", "snowscape", "spectral tief", "spicy extract", "spiky shield", "spirit break",
+               "spotlight", "steam eruption", "steel beam", "strange steam", "struggle", "sunsteel strike",
+               "surging strikes", "switcheroo", "techno blast", "thief", "thousand arrows", "thousand waves",
+               "thunder cage", "thunderous kick", "tidy up", "trailblaze", "transform", "trick", "twin beam",
+               "v-create", "wicked blow", "wicked torque", "wide guard"]
 
 OHKO = ["fissure", "guillotine", "horn drill", "sheer cold"]
 NEVER = ["false swipe", "natures madness", "ruination", "endeavor", "super fang"]
@@ -169,8 +170,8 @@ TypeImmune = dict(levitate="ground", voltabsorb="electric", waterabsorb="water",
                   stormdrain="water", eartheater="ground", flashfire="fire", motordrive="electric",
                   dryskin="water", sapsipper="grass")
 IgnoreAbilities = ["mold breaker", "mycelium might", "teravolt", "turboblaze"]
-TypeList = ["normal", "fire", "water", "grass", "electric", "ice", "fighting", "poison", "ground",
-            "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy"]
+TypeList = ["Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", "Ground",
+            "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"]
 MoveList = []
 
 normal = dict(normal=1, fire=1, water=1, grass=1, bug=1, ice=1, electric=1, flying=1, ground=1, rock=.5, steel=.5,
@@ -250,19 +251,19 @@ def getTypeMatchups(pokemon):
         for types in pokemon.types:
             Modifier = Modifier * typeMatchups.get(entry).get(types)
         if Modifier == .25:
-            Quarter.append(entry)
+            Quarter.append(entry.lower())
         elif Modifier == .5:
-            Half.append(entry)
+            Half.append(entry.lower())
         elif Modifier == 1.0:
-            Neutral.append(entry)
+            Neutral.append(entry.lower())
         elif Modifier == 2.0:
-            Double.append(entry)
+            Double.append(entry.lower())
         elif Modifier == 4.0:
-            Quad.append(entry)
+            Quad.append(entry.lower())
         elif Modifier == 0:
-            Immune.append(entry)
+            Immune.append(entry.lower())
         else:
-            Error.append((entry, Modifier))
+            Error.append((entry.lower(), Modifier))
         Modifier = 1
 
     return Quarter, Half, Neutral, Double, Quad, Immune, Error
@@ -272,23 +273,18 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
     DamageRolls = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 
     # print(move.moveType)
-    if move.moveType in user.quarter:
+    if move.moveType in target.quarter:
         TypeMatchup = .25
-    elif move.moveType in user.half:
+    elif move.moveType in target.half:
         TypeMatchup = .5
-    elif move.moveType in user.double:
+    elif move.moveType in target.double:
         TypeMatchup = 2
-    elif move.moveType in user.quad:
+    elif move.moveType in target.quad:
         TypeMatchup = 4
-    elif move.moveType in user.immune:
+    elif move.moveType in target.immune:
         TypeMatchup = 0
     else:
         TypeMatchup = 1
-
-    if target.ability in TypeImmune:
-        if TypeImmune.get(target.ability).lower() == move.moveType and user.ability not in IgnoreAbilities:
-            TypeMatchup = 0
-            print("immune through ability")
 
     if move.name in OHKO:
         for x in range(16):
@@ -319,6 +315,12 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
         mainMultiplier = (part1 * part2 / 50) +2
 
         Other = 1  # Technically means nothing for now
+        Ability = 1
+        if target.ability in TypeImmune:
+            if TypeImmune.get(target.ability).lower() == move.moveType.lower() and user.ability not in IgnoreAbilities:
+                Ability = 0
+                # print("immune through ability")
+
         Targets = 1
         PB = 1  # This will be used for Parental Bond SOON(ish)
 
@@ -350,18 +352,23 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             defense = defense * 1.5
 
         # Stab (Including Adaptability)
+
         if move.moveType not in user.types:
             STAB = 1
         elif user.ability.lower == "adaptability":
             STAB = 2
         else:
             STAB = 1.5
+        if random == 100:
+            # print(move.moveType, user.types, STAB)
+            pass
 
         Critical = 1  # Deal with Crits Later
 
-        ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(random / 100) * STAB * TypeMatchup * Burn)
+        ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(random / 100) * STAB * TypeMatchup * Burn * Ability)
         if random == 100:
-            print(move.name + ":", mainMultiplier, Targets,PB,Weather,glaive,Critical, float(random/100), STAB, TypeMatchup, Burn)
+            # print(move.name + ":", mainMultiplier, Targets,PB,Weather,glaive,Critical, float(random/100), STAB, TypeMatchup, Burn)
+            pass
         DamageRolls[random - 85] = ThisRoll
 
     return DamageRolls
@@ -658,7 +665,9 @@ varA = pypokedex.get(name=userIn).base_stats.hp
 varB = math.floor(pkmnBhp / 4)
 varC = pkmnBlvl / 100
 varD = pkmnBlvl + 10
-pokemonB.currentHP = (((2 * varA) + 31 + varB) * varC) + varD
+print(pokemonB.currentHP)
+pokemonB.currentHP = int(((2 * int(varA)) + 31 + float(varB)) * float(varC)) + float(varD) * float(float(currHPB)/100)
+print(pokemonB.currentHP)
 
 # print(pokemonB.name)
 # print(pokemonB.HP)
@@ -677,23 +686,35 @@ removeBannedMoves()
 
 KillingRolls = 0
 LosingRolls = 0
+numerator = 0.0
+denomenator = 0
 
 for moves in MoveList:
     Rolls = getDamageRolls(pokemonA, moves, pokemonB, "none", 1)
-    print(moves.name, Rolls[15])
+    #print(moves.name, Rolls[15])
     for roll in Rolls:
         if roll >= pokemonB.currentHP:
             KillingRolls = KillingRolls + 1
-            # print(moves.name)
+            numerator = float(numerator + (min(moves.accuracy, 100)/100))
+            print(moves.name, roll)
         else:
             LosingRolls = LosingRolls + 1
+            denomenator = denomenator +1
 
 print("winning rolls", KillingRolls)
 print("losing rolls", LosingRolls)
-print(pokemonB.types)
-print(pokemonA.types)
-print(pokemonB.pkmn.types[0])
-print(pokemonA.pkmn.types[0])
+num = float(numerator/denomenator)*100
+print(num,"%")
+# print(pokemonB.types)
+# print(pokemonA.types)
+# print(pokemonB.pkmn.types[0])
+# print(pokemonA.pkmn.types[0])
+# print(pokemonB.quarter)
+# print(pokemonB.half)
+# print(pokemonB.neutral)
+# print(pokemonB.double)
+# print(pokemonB.quad)
+# print(pokemonB.immune)
 
 moonblast = Move("moonblast", "fairy", "special", 95, 100)
 #Rolls = getDamageRolls(pokemonA, moonblast, pokemonB, "none", 1)
