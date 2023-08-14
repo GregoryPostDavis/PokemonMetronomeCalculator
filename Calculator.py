@@ -88,6 +88,7 @@ class Pokemon:
         self.speI = 31
         self.pkmn = pypokedex.get(name=self.name)
         self.types = self.pkmn.types
+
         self.quarter, self.half, self.neutral, self.double, self.quad, self.immune, self.error = getTypeMatchups(
             self.pkmn)
         self.ability = ability
@@ -107,7 +108,18 @@ class Pokemon:
         self.SPE = math.floor(((((2 * self.pkmn.base_stats.speed + self.speI + (
             math.floor(self.speE / 4))) * self.level) / 100) + 5) * speMod)
 
+
 Testing = True
+testPokemonName = "Clefable"
+testHpA = 252
+testAtkA = 0
+testDefA = 200
+testSpaA = 56
+testSpdA = 0
+testSpeA = 0
+testCurrHpA = 394
+testNatureA = "modest"
+testAbilityA = "magic guard"
 
 bannedMoves = ["After You", "Apple Acid", "Armor Cannon", "Assist", "Astral Barrage", "Aura Wheel", "Baneful Bunker",
                "Beak Blast", "Behemoth Bash", "Behemoth Blade", "Belch", "Bestow", "Blazing Torque", "Body Press",
@@ -131,9 +143,9 @@ bannedMoves = ["After You", "Apple Acid", "Armor Cannon", "Assist", "Astral Barr
                "Thunder Cage", "Thunderous Kick", "Tidy Up", "Trailblaze", "Transform", "Trick", "Twin Beam",
                "V-create", "Wicked Blow", "Wicked Torque", "Wide Guard"]
 
-OHKO = ["Fissure", "Guillotine", "Horn Drill", "Sheer Cold"]
-NEVER = ["False Swipe", "Natures Madness", "Ruination", "Endeavor", "Super Fang"]
-AutoCrit = ["Flower Trick", "Frost Breath", "Storm Throw", "Surging Strikes", "Wicked Blow", "Zippy Zap"]
+OHKO = ["fissure", "guillotine", "horn drill", "sheer cold"]
+NEVER = ["false swipe", "natures madness", "ruination", "endeavor", "super fang"]
+AutoCrit = ["flower trick", "frost breath", "storm throw", "surging strikes", "wicked blow", "zippy zap"]
 NatureList = ["hardy", "lonely", "brave", "adamant", "naughty", "bold", "docile", "relaxed", "impish", "lax", "timid",
               "hasty", "serious", "jolly", "naive", "modest", "mild", "quiet", "bashful", "rash", "calm", "sassy",
               "gentle", "careful", "quirky"]
@@ -157,8 +169,8 @@ TypeImmune = dict(levitate="ground", voltabsorb="electric", waterabsorb="water",
                   stormdrain="water", eartheater="ground", flashfire="fire", motordrive="electric",
                   dryskin="water", sapsipper="grass")
 IgnoreAbilities = ["mold breaker", "mycelium might", "teravolt", "turboblaze"]
-TypeList = ["Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", "Ground",
-            "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"]
+TypeList = ["normal", "fire", "water", "grass", "electric", "ice", "fighting", "poison", "ground",
+            "flying", "psychic", "bug", "rock", "ghost", "dragon", "dark", "steel", "fairy"]
 MoveList = []
 
 normal = dict(normal=1, fire=1, water=1, grass=1, bug=1, ice=1, electric=1, flying=1, ground=1, rock=.5, steel=.5,
@@ -221,7 +233,7 @@ def readMoves(path):
             if times == 0:
                 times = 1
             else:
-                MoveList.append(Move(row[0], row[1], row[2], row[3], row[4]))
+                MoveList.append(Move(row[0].lower(), row[1].lower(), row[2].lower(), row[3], row[4]))
 
 
 def getTypeMatchups(pokemon):
@@ -259,7 +271,7 @@ def getTypeMatchups(pokemon):
 def getDamageRolls(user, move, target, currentWeather, glaive):
     DamageRolls = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 
-    #print(move.moveType)
+    # print(move.moveType)
     if move.moveType in user.quarter:
         TypeMatchup = .25
     elif move.moveType in user.half:
@@ -286,14 +298,15 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
     if move.category.lower() == "physical":
         offense = user.ATK
         defense = target.DEF
-        if currentWeather == "snow" and "ice" in target.types:
-            defense = defense * 1.5
-    elif move.category.lower() == "special" and move.name.lower() != "psyshock":
+        #print(move.name, "ATK", user.ATK, target.DEF)
+    elif move.category.lower() == "special":
         offense = user.SPA
-        defense = target.SPD
-    elif move.category.lower() == "special" and move.name.lower() == "psyshock":
-        offense = user.SPA
-        defense = target.DEF
+        if move.name.lower() == "psyshock":
+            defense = target.DEF
+            #print(move.name, "SPATK", user.SPA, target.DEF)
+        else:
+            defense = target.SPD
+            #print(move.name, "SPATK", user.SPA, target.SPD)
     elif move.category.lower() == "status":
         for x in range(16):
             DamageRolls[x] = 0
@@ -301,21 +314,21 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
 
     # Actual Damage being Calculated
     for random in range(85, 101):
-        levelBased = ((2 * user.level / 5) + 2)
+        part1 = ((2 * user.level / 5) + 2)
         part2 = (move.power * float(offense / defense))
-        mainMultiplier = (levelBased * part2 / 50)
+        mainMultiplier = (part1 * part2 / 50) +2
 
-        Other = 1
-
+        Other = 1  # Technically means nothing for now
         Targets = 1
-
         PB = 1  # This will be used for Parental Bond SOON(ish)
 
+        # Burn Calculation
         if user.status.lower() == "burn" and move.category.lower() == "physical" and user.ability.lower() != "guts":
             Burn = .5
         else:
             Burn = 1
 
+        # Weather Factors
         if user.ability == "cloud nine" or user.ability == "air lock" or target.ability == "cloud nine" or target.ability == "air lock":
             Weather = 1
         elif currentWeather.lower() == "rain":
@@ -333,7 +346,10 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
                 Weather = .5
         else:
             Weather = 1
+        if currentWeather == "snow" and "ice" in target.types:
+            defense = defense * 1.5
 
+        # Stab (Including Adaptability)
         if move.moveType not in user.types:
             STAB = 1
         elif user.ability.lower == "adaptability":
@@ -343,9 +359,9 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
 
         Critical = 1  # Deal with Crits Later
 
-        ThisRoll = math.floor(
-            mainMultiplier * Targets * PB * Weather * glaive * Critical * random/100 * STAB * TypeMatchup * Burn)
-        # print(mainMultiplier, Targets, PB, Weather, glaive, Critical, random/100, STAB, TypeMatchup, Burn, ThisRoll)
+        ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(random / 100) * STAB * TypeMatchup * Burn)
+        if random == 100:
+            print(move.name + ":", mainMultiplier, Targets,PB,Weather,glaive,Critical, float(random/100), STAB, TypeMatchup, Burn)
         DamageRolls[random - 85] = ThisRoll
 
     return DamageRolls
@@ -354,6 +370,7 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
 # Get Pokemon A
 while True:
     if Testing:
+        userIn = testPokemonName
         pkmnA = pypokedex.get(name="Clefable")
         break
     else:
@@ -383,8 +400,9 @@ while True:
 # Get HP EVs A
 while True:
     if Testing:
-        pkmnAhp = 252
+        pkmnAhp = testHpA
         break
+    else:
         try:
             pkmnAhp = input("Please Enter the HP EVs ")
             if 0 <= int(pkmnAhp) <= 252:
@@ -398,8 +416,9 @@ while True:
 # Get Attack EVs A
 while True:
     if Testing:
-        pkmnAatk = 0
+        pkmnAatk = testAtkA
         break
+    else:
         try:
             pkmnAatk = input("Please Enter the Attack EVs ")
             if 0 <= int(pkmnAatk) <= 252:
@@ -413,7 +432,7 @@ while True:
 # Get Defense EVs A
 while True:
     if Testing:
-        pkmnAdef = 200
+        pkmnAdef = testDefA
         break
     else:
         try:
@@ -429,7 +448,7 @@ while True:
 # Get Special Attack EVs A
 while True:
     if Testing:
-        pkmnAspa = 56
+        pkmnAspa = testSpaA
         break
     else:
         try:
@@ -445,7 +464,7 @@ while True:
 # Get Special Defense EVs A
 while True:
     if Testing:
-        pkmnAspd = 0
+        pkmnAspd = testSpdA
         break
     else:
         try:
@@ -461,7 +480,7 @@ while True:
 # Get Speed EVs A
 while True:
     if Testing:
-        pkmnAspe = 0
+        pkmnAspe = testSpeA
         break
     else:
         try:
@@ -477,12 +496,14 @@ while True:
 # Get Current HP A
 while True:
     if Testing:
-        currHP = 394
+        currHP = testCurrHpA
+        break
     else:
         try:
             currHP = input("Please Enter the Current HP ")
             if 0 <= int(currHP) <= math.floor(
-                    (((2 * int(pkmnA.base_stats.hp) + 31 + (math.floor(int(pkmnAhp) / 4))) * int(pkmnAlvl)) / 100) + int(
+                    (((2 * int(pkmnA.base_stats.hp) + 31 + (math.floor(int(pkmnAhp) / 4))) * int(
+                        pkmnAlvl)) / 100) + int(
                         pkmnAlvl) + 10):
                 break
             else:
@@ -493,7 +514,8 @@ while True:
 # Get Nature A
 while True:
     if Testing:
-        pkmnAnat = "modest"
+        pkmnAnat = testNatureA
+        break
     else:
         pkmnAnat = input("Please Enter the Nature ").lower()
         if pkmnAnat in NatureList:
@@ -504,21 +526,13 @@ while True:
 # Get Ability A
 while True:
     if Testing:
-        abilityA = "magic guard"
+        abilityA = testAbilityA
     else:
         abilityA = input("Please Enter the Ability ").lower()
     break
 
 pokemonA = Pokemon(userIn, pkmnAlvl, pkmnAhp, pkmnAatk, pkmnAdef, pkmnAspa, pkmnAspd, pkmnAspe, pkmnAnat, currHP,
                    abilityA)
-
-# print(pokemonA.name)
-# print(pokemonA.HP)
-# print(pokemonA.ATK)
-# print(pokemonA.DEF)
-# print(pokemonA.SPA)
-# print(pokemonA.SPD)
-# print(pokemonA.SPE)
 
 # Get Pokemon B
 while True:
@@ -639,18 +653,12 @@ while True:
 
 pokemonB = Pokemon(userIn, pkmnBlvl, pkmnBhp, pkmnBatk, pkmnBdef, pkmnBspa, pkmnBspd, pkmnBspe, pkmnBnat, currHPB,
                    abilityB)
-pokemonB.currentHP = int(
-    ((int(pypokedex.get(name=userIn).base_stats.hp * 2 * 31 + math.floor(pkmnBhp/4)) * int(
-        pkmnBlvl) / 100) + int(pkmnBlvl) + 10) * (int(currHPB) / 100))
-varA =pypokedex.get(name=userIn).base_stats.hp
-varB =math.floor(pkmnBhp/4)
-varC =pkmnBlvl/100
-varD =pkmnBlvl+10
-pokemonB.currentHP = (((2*varA)+31+varB)*varC)+varD
-
-print(pypokedex.get(name=userIn).base_stats.hp, math.floor(pkmnBhp/4),pkmnBlvl/100, pkmnBlvl+10, int(currHPB)/100)
-print(pokemonB.currentHP)
-
+# Finally Correct Current HP math
+varA = pypokedex.get(name=userIn).base_stats.hp
+varB = math.floor(pkmnBhp / 4)
+varC = pkmnBlvl / 100
+varD = pkmnBlvl + 10
+pokemonB.currentHP = (((2 * varA) + 31 + varB) * varC) + varD
 
 # print(pokemonB.name)
 # print(pokemonB.HP)
@@ -672,22 +680,27 @@ LosingRolls = 0
 
 for moves in MoveList:
     Rolls = getDamageRolls(pokemonA, moves, pokemonB, "none", 1)
+    print(moves.name, Rolls[15])
     for roll in Rolls:
         if roll >= pokemonB.currentHP:
-            KillingRolls = KillingRolls +1
-            print(moves.name)
+            KillingRolls = KillingRolls + 1
+            # print(moves.name)
         else:
-            LosingRolls = LosingRolls+1
+            LosingRolls = LosingRolls + 1
 
 print("winning rolls", KillingRolls)
 print("losing rolls", LosingRolls)
+print(pokemonB.types)
+print(pokemonA.types)
+print(pokemonB.pkmn.types[0])
+print(pokemonA.pkmn.types[0])
 
-moonblast = Move("moonblast","fairy","special",95,100)
-Rolls = getDamageRolls(pokemonA, moonblast, pokemonB, "none", 1)
-print(Rolls)
-for roll in Rolls:
-    if roll >= pokemonB.currentHP:
-
-        print("Win", roll)
-    else:
-        print("Loss", roll)
+moonblast = Move("moonblast", "fairy", "special", 95, 100)
+#Rolls = getDamageRolls(pokemonA, moonblast, pokemonB, "none", 1)
+#print(Rolls)
+# for roll in Rolls:
+#     if roll >= pokemonB.currentHP:
+#
+#         print("Win", roll)
+#     else:
+#         print("Loss", roll)
