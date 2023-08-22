@@ -360,6 +360,14 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             # print(move.moveType, user.types, STAB)
             pass
 
+        if target.ability.lower() == "bulletproof":
+            if move.name in Bulletproof:
+                Ability = 0
+
+        if target.ability.lower() == "soundproof":
+            if move.name in Soundproof:
+                Ability = 0
+
         Critical = 1  # Deal with Crits Later
 
         ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(random / 100) * STAB * TypeMatchup * Burn * Ability)
