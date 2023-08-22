@@ -280,114 +280,128 @@ def getTypeMatchups(pokemon):
 def getDamageRolls(user, move, target, currentWeather, glaive):
     DamageRolls = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 
-    # print(move.moveType)
-    if move.moveType in target.quarter:
-        TypeMatchup = .25
-    elif move.moveType in target.half:
-        TypeMatchup = .5
-    elif move.moveType in target.double:
-        TypeMatchup = 2
-    elif move.moveType in target.quad:
-        TypeMatchup = 4
-    elif move.moveType in target.immune:
-        TypeMatchup = 0
-    else:
-        TypeMatchup = 1
+    if move.power > 0:
+        # print(move.moveType)
+        if move.moveType in target.quarter:
+            TypeMatchup = .25
+        elif move.moveType in target.half:
+            TypeMatchup = .5
+        elif move.moveType in target.double:
+            TypeMatchup = 2
+        elif move.moveType in target.quad:
+            TypeMatchup = 4
+        elif move.moveType in target.immune:
+            TypeMatchup = 0
+        else:
+            TypeMatchup = 1
 
-    if move.name in OHKO:
-        for x in range(16):
-            DamageRolls[x] = 9999
-        return DamageRolls
+        if move.name in OHKO:
+            for x in range(16):
+                DamageRolls[x] = 9999
+            return DamageRolls
 
-    if move.category.lower() == "physical":
-        offense = user.ATK
-        defense = target.DEF
-        #print(move.name, "ATK", user.ATK, target.DEF)
-    elif move.category.lower() == "special":
-        offense = user.SPA
-        if move.name.lower() == "psyshock":
+        if move.category.lower() == "physical":
+            offense = user.ATK
             defense = target.DEF
-            #print(move.name, "SPATK", user.SPA, target.DEF)
-        else:
-            defense = target.SPD
-            #print(move.name, "SPATK", user.SPA, target.SPD)
-    elif move.category.lower() == "status":
-        for x in range(16):
-            DamageRolls[x] = 0
+            #print(move.name, "ATK", user.ATK, target.DEF)
+        elif move.category.lower() == "special":
+            offense = user.SPA
+            if move.name.lower() == "psyshock":
+                defense = target.DEF
+                #print(move.name, "SPATK", user.SPA, target.DEF)
+            else:
+                defense = target.SPD
+                #print(move.name, "SPATK", user.SPA, target.SPD)
+        elif move.category.lower() == "status":
+            for x in range(16):
+                DamageRolls[x] = 0
+            return DamageRolls
+
+        # Actual Damage being Calculated
+        for random in range(85, 101):
+            part1 = ((2 * user.level / 5) + 2)
+            part2 = (move.power * float(offense / defense))
+            mainMultiplier = (part1 * part2 / 50) +2
+
+            Other = 1  # Technically means nothing for now
+            Ability = 1
+            if target.ability in TypeImmune:
+                if TypeImmune.get(target.ability).lower() == move.moveType.lower() and user.ability not in IgnoreAbilities:
+                    Ability = 0
+                    # print("immune through ability")
+
+            Targets = 1
+            PB = 1  # This will be used for Parental Bond SOON(ish)
+
+            # Burn Calculation
+            if user.status.lower() == "burn" and move.category.lower() == "physical" and user.ability.lower() != "guts":
+                Burn = .5
+            else:
+                Burn = 1
+
+            # Weather Factors
+            if user.ability == "cloud nine" or user.ability == "air lock" or target.ability == "cloud nine" or target.ability == "air lock":
+                Weather = 1
+            elif currentWeather.lower() == "rain":
+                if move.moveType.lower() == "water":
+                    Weather = 1.5
+                elif move.moveType.lower() == "fire":
+                    Weather = .5
+            elif currentWeather.lower() == "sun":
+                if move.name.lower() == "hydro steam" or move.moveType.lower() == "fire":
+                    Weather = 1.5
+                elif move.moveType.lower() == "water":
+                    Weather = .5
+            elif currentWeather.lower() == "sand" or currentWeather.lower() == "snow":
+                if move.name.lower() == "solar beam" or move.name.lower() == "solar blade":
+                    Weather = .5
+            else:
+                Weather = 1
+            if currentWeather == "snow" and "ice" in target.types:
+                defense = defense * 1.5
+
+            # Stab (Including Adaptability)
+
+            if move.moveType not in user.types:
+                STAB = 1
+            elif user.ability.lower == "adaptability":
+                STAB = 2
+            else:
+                STAB = 1.5
+            if random == 100:
+                # print(move.moveType, user.types, STAB)
+                pass
+
+            if target.ability.lower() == "bulletproof":
+                if move.name in Bulletproof:
+                    Ability = 0
+
+            if target.ability.lower() == "soundproof":
+                if move.name in Soundproof:
+                    Ability = 0
+
+            Critical = 1  # Deal with Crits Later
+
+            ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(random / 100) * STAB * TypeMatchup * Burn * Ability)
+            if random == 100:
+                # print(move.name + ":", mainMultiplier, Targets,PB,Weather,glaive,Critical, float(random/100), STAB, TypeMatchup, Burn)
+                pass
+            DamageRolls[random - 85] = ThisRoll
+
         return DamageRolls
-
-    # Actual Damage being Calculated
-    for random in range(85, 101):
-        part1 = ((2 * user.level / 5) + 2)
-        part2 = (move.power * float(offense / defense))
-        mainMultiplier = (part1 * part2 / 50) +2
-
-        Other = 1  # Technically means nothing for now
-        Ability = 1
-        if target.ability in TypeImmune:
-            if TypeImmune.get(target.ability).lower() == move.moveType.lower() and user.ability not in IgnoreAbilities:
-                Ability = 0
-                # print("immune through ability")
-
-        Targets = 1
-        PB = 1  # This will be used for Parental Bond SOON(ish)
-
-        # Burn Calculation
-        if user.status.lower() == "burn" and move.category.lower() == "physical" and user.ability.lower() != "guts":
-            Burn = .5
-        else:
-            Burn = 1
-
-        # Weather Factors
-        if user.ability == "cloud nine" or user.ability == "air lock" or target.ability == "cloud nine" or target.ability == "air lock":
-            Weather = 1
-        elif currentWeather.lower() == "rain":
-            if move.moveType.lower() == "water":
-                Weather = 1.5
-            elif move.moveType.lower() == "fire":
-                Weather = .5
-        elif currentWeather.lower() == "sun":
-            if move.name.lower() == "hydro steam" or move.moveType.lower() == "fire":
-                Weather = 1.5
-            elif move.moveType.lower() == "water":
-                Weather = .5
-        elif currentWeather.lower() == "sand" or currentWeather.lower() == "snow":
-            if move.name.lower() == "solar beam" or move.name.lower() == "solar blade":
-                Weather = .5
-        else:
-            Weather = 1
-        if currentWeather == "snow" and "ice" in target.types:
-            defense = defense * 1.5
-
-        # Stab (Including Adaptability)
-
-        if move.moveType not in user.types:
-            STAB = 1
-        elif user.ability.lower == "adaptability":
-            STAB = 2
-        else:
-            STAB = 1.5
-        if random == 100:
-            # print(move.moveType, user.types, STAB)
-            pass
-
-        if target.ability.lower() == "bulletproof":
-            if move.name in Bulletproof:
-                Ability = 0
-
-        if target.ability.lower() == "soundproof":
-            if move.name in Soundproof:
-                Ability = 0
-
-        Critical = 1  # Deal with Crits Later
-
-        ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(random / 100) * STAB * TypeMatchup * Burn * Ability)
-        if random == 100:
-            # print(move.name + ":", mainMultiplier, Targets,PB,Weather,glaive,Critical, float(random/100), STAB, TypeMatchup, Burn)
-            pass
-        DamageRolls[random - 85] = ThisRoll
-
-    return DamageRolls
+    else:
+        if move.name.lower() == "final gambit":
+            for x in range(16):
+                DamageRolls[x] = user.currentHP
+        elif move.name.lower() == "seismic toss" or move.name.lower() == "night shade":
+            for x in range(16):
+                DamageRolls[x] = user.level
+        elif move.name.lower() == "sonicboom" or move.name.lower() == "sonic boom":
+            for x in range(16):
+                DamageRolls[x] = 20
+        elif move.name.lower() == "dragon rage":
+            for x in range(16):
+                DamageRolls[x] = 40
 
 
 # Get Pokemon A
@@ -713,7 +727,7 @@ while True:
 # Get Ability B
 while True:
     if Testing:
-        pkmnAnat = testAbilityB
+        abilityB = testAbilityB
         break
     else:
         abilityB = input("Please Enter the Ability ").lower()
@@ -741,9 +755,9 @@ print(pokemonB.currentHP)
 readMoves("PokemonMoves.csv")
 removeBannedMoves()
 
-# for moves in MoveList:
-#     if moves.power == -1 and moves.name not in OHKO:
-#         print(moves.name, moves.moveType, moves.category, moves.power, moves.accuracy)
+for moves in MoveList:
+    if moves.power == -1 and moves.name not in OHKO:
+        print(moves.name, moves.moveType, moves.category, moves.power, moves.accuracy)
 
 KillingRolls = 0
 LosingRolls = 0
@@ -765,19 +779,9 @@ for moves in MoveList:
 print("winning rolls", KillingRolls)
 print("losing rolls", LosingRolls)
 num = float(numerator/denomenator)*100
-print(num,"%")
-# print(pokemonB.types)
-# print(pokemonA.types)
-# print(pokemonB.pkmn.types[0])
-# print(pokemonA.pkmn.types[0])
-# print(pokemonB.quarter)
-# print(pokemonB.half)
-# print(pokemonB.neutral)
-# print(pokemonB.double)
-# print(pokemonB.quad)
-# print(pokemonB.immune)
+print(num, "%")
 
-moonblast = Move("moonblast", "fairy", "special", 95, 100)
+#moonblast = Move("moonblast", "fairy", "special", 95, 100)
 #Rolls = getDamageRolls(pokemonA, moonblast, pokemonB, "none", 1)
 #print(Rolls)
 # for roll in Rolls:
