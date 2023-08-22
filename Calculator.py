@@ -478,6 +478,53 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
                     ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(
                         random / 100) * STAB * TypeMatchup * Burn * Ability)
                     DamageRolls.append(ThisRoll)
+        elif move.name.lower() == "psywave":
+            for bp in range(0, 101):
+                # Actual Damage being Calculated
+                for random in range(85, 101):
+                    offense = user.SPA
+                    defense = target.SPD
+                    part1 = ((2 * user.level / 5) + 2)
+                    part2 = (user.level / 100 * (bp + 50) * float(offense / defense))
+                    mainMultiplier = (part1 * part2 / 50) + 2
+                    Other = 1  # Technically means nothing for now
+                    Ability = 1
+                    if target.ability in TypeImmune:
+                        if TypeImmune.get(
+                                target.ability).lower() == move.moveType.lower() and user.ability not in IgnoreAbilities:
+                            Ability = 0
+
+                    if move.moveType in target.quarter:
+                        TypeMatchup = .25
+                    elif move.moveType in target.half:
+                        TypeMatchup = .5
+                    elif move.moveType in target.double:
+                        TypeMatchup = 2
+                    elif move.moveType in target.quad:
+                        TypeMatchup = 4
+                    elif move.moveType in target.immune:
+                        TypeMatchup = 0
+                    else:
+                        TypeMatchup = 1
+
+                    if move.moveType not in user.types:
+                        STAB = 1
+                    elif user.ability.lower == "adaptability":
+                        STAB = 2
+                    else:
+                        STAB = 1.5
+
+                    Critical = 1  # Deal with Crits Later
+                    Weather = 1
+
+                    Burn = 1
+
+                    Targets = 1
+                    PB = 1  # This will be used for Parental Bond SOON(ish)
+
+                    ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(
+                        random / 100) * STAB * TypeMatchup * Burn * Ability)
+                    DamageRolls.append(ThisRoll)
         elif move.name.lower() == "crush grip":
             # Actual Damage being Calculated
             for random in range(85, 101):
@@ -937,7 +984,7 @@ for moves in MoveList:
 KillingRolls = 0
 LosingRolls = 0
 numerator = 0.0
-denomenator = 0
+denominator = 0
 
 for moves in MoveList:
     Rolls = getDamageRolls(pokemonA, moves, pokemonB, "none", 1)
@@ -949,11 +996,11 @@ for moves in MoveList:
             print(moves.name, roll)
         else:
             LosingRolls = LosingRolls + 1
-            denomenator = denomenator + 1
+            denominator = denominator + 1
 
 print("winning rolls", KillingRolls)
 print("losing rolls", LosingRolls)
-num = float(numerator / denomenator) * 100
+num = float(numerator / denominator) * 100
 print(num, "%")
 
 # moonblast = Move("moonblast", "fairy", "special", 95, 100)
