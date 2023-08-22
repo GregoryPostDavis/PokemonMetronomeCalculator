@@ -2,3 +2,6 @@ API Documentation: https://github.com/arnavb/pypokedex
 Damage Calculations: https://bulbapedia.bulbagarden.net/wiki/Damage
 Stat Calculations: https://bulbapedia.bulbagarden.net/wiki/Stat#Permanent_stats
 Nature List: https://bulbapedia.bulbagarden.net/wiki/Nature#List_of_Natures
+
+Unimplemented Moves:
+Trump Card: https://bulbapedia.bulbagarden.net/wiki/Trump_Card_(move)#Generation_VIII_onwards

@@ -782,7 +782,7 @@ Uproar,Normal,Special,90,100
 U-turn,Bug,Physical,70,100
 Vacuum Wave,Fighting,Special,40,100
 V-create,Fire,Physical,180,95
-Veevee Volley,Normal,Physical,-1,200
+Veevee Volley,Normal,Physical,41,200
 Venom Drench,Poison,Status,0,100
 Venoshock,Poison,Special,65,100
 Victory Dance,Fighting,Status,0,200
@@ -796,7 +796,7 @@ Water Gun,Water,Special,40,100
 Water Pledge,Water,Special,80,100
 Water Pulse,Water,Special,60,100
 Water Shuriken,Water,Special,15,100
-Water Sport,Water,Special,0,200
+Water Sport,Water,Status,0,200
 Water Spout,Water,Special,150,100
 Waterfall,Water,Physical,80,100
 Wave Crash,Water,Physical,120,100
