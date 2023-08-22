@@ -280,6 +280,9 @@ def getTypeMatchups(pokemon):
 def getDamageRolls(user, move, target, currentWeather, glaive):
     DamageRolls = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 
+    targetMAXHP = pypokedex.get(name=target.name).base_stats.hp * math.floor(pkmnBhp / 4) * target.level / 100 * \
+                  target.level + 10
+
     if move.power > 0:
         # print(move.moveType)
         if move.moveType in target.quarter:
@@ -405,9 +408,7 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             for x in range(16):
                 DamageRolls[x] = 40
         elif move.name.lower() == "present":
-
             for bp in range(1, 4):
-
                 # Actual Damage being Calculated
                 for random in range(85, 101):
                     offense = user.ATK
@@ -415,16 +416,13 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
                     part1 = ((2 * user.level / 5) + 2)
                     part2 = (bp * 40 * float(offense / defense))
                     mainMultiplier = (part1 * part2 / 50) + 2
-
                     Other = 1  # Technically means nothing for now
                     Ability = 1
                     if target.ability in TypeImmune:
                         if TypeImmune.get(
                                 target.ability).lower() == move.moveType.lower() and user.ability not in IgnoreAbilities:
                             Ability = 0
-                            # print("immune through ability")
 
-                    # print(move.moveType)
                     if move.moveType in target.quarter:
                         TypeMatchup = .25
                     elif move.moveType in target.half:
@@ -460,6 +458,56 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
                     ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(
                         random / 100) * STAB * TypeMatchup * Burn * Ability)
                     DamageRolls.append(ThisRoll)
+        elif move.name.lower() == "crush grip":
+            # Actual Damage being Calculated
+            for random in range(85, 101):
+                offense = user.ATK
+                defense = target.DEF
+                part1 = ((2 * user.level / 5) + 2)
+                part2 = (100 * target.currentHP / targetMAXHP * float(offense / defense))
+                mainMultiplier = (part1 * part2 / 50) + 2
+                Other = 1  # Technically means nothing for now
+                Ability = 1
+                if target.ability in TypeImmune:
+                    if TypeImmune.get(
+                            target.ability).lower() == move.moveType.lower() and user.ability not in IgnoreAbilities:
+                        Ability = 0
+
+                if move.moveType in target.quarter:
+                    TypeMatchup = .25
+                elif move.moveType in target.half:
+                    TypeMatchup = .5
+                elif move.moveType in target.double:
+                    TypeMatchup = 2
+                elif move.moveType in target.quad:
+                    TypeMatchup = 4
+                elif move.moveType in target.immune:
+                    TypeMatchup = 0
+                else:
+                    TypeMatchup = 1
+
+                if move.moveType not in user.types:
+                    STAB = 1
+                elif user.ability.lower == "adaptability":
+                    STAB = 2
+                else:
+                    STAB = 1.5
+
+                Critical = 1  # Deal with Crits Later
+                Weather = 1
+
+                # Burn Calculation
+                if user.status.lower() == "burn" and move.category.lower() == "physical" and user.ability.lower() != "guts":
+                    Burn = .5
+                else:
+                    Burn = 1
+
+                Targets = 1
+                PB = 1  # This will be used for Parental Bond SOON(ish)
+
+                ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(
+                    random / 100) * STAB * TypeMatchup * Burn * Ability)
+                DamageRolls.append(ThisRoll)
 
         return DamageRolls
 
@@ -763,11 +811,11 @@ while True:
         currHPB = testCurrHpB
         break
     else:
-            currHPB = input("Please Enter the Current HP Percentage ")
-            if 1 <= 100:
-                break
-            else:
-                print("HP fell outside of the allowed range ")
+        currHPB = input("Please Enter the Current HP Percentage ")
+        if 1 <= 100:
+            break
+        else:
+            print("HP fell outside of the allowed range ")
 
 # Get Nature B
 while True:
