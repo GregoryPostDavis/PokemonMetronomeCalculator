@@ -326,6 +326,7 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             return DamageRolls
 
         # Actual Damage being Calculated
+        # Modify formula for Eruption and Water Spout
         for random in range(85, 101):
             part1 = ((2 * user.level / 5) + 2)
             part2 = (move.power * float(offense / defense))
@@ -524,6 +525,8 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
 
                     ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(
                         random / 100) * STAB * TypeMatchup * Burn * Ability)
+                    if ThisRoll < 1:
+                        ThisRoll = 1
                     DamageRolls.append(ThisRoll)
         elif move.name.lower() == "crush grip":
             # Actual Damage being Calculated
@@ -625,6 +628,14 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
                 ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(
                     random / 100) * STAB * TypeMatchup * Burn * Ability)
                 DamageRolls.append(ThisRoll)
+        elif move.name.lower() == "flail":
+            # 20  BP if HP > 68.75%
+            # 40  BP if HP > 35.42
+            # 80  BP if HP > 20.83
+            # 100 BP if HP > 10.42
+            # 150 BP if HP > 04.17
+            # 200 BP Otherwise
+            pass
 
         return DamageRolls
 

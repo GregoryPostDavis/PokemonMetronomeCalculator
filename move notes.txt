@@ -5,6 +5,10 @@ Power of -1 = Special Formula for Damage
     - Seismic Toss and Night Shade do damage based on Level (Implemented)
     - Super Fang does a minimum of 1 damage, can only kill when opponent is at 1hp
     - Nature's Madness, Ruination, Endeavor, and False Swipe are unable to kill and thus can have a damage roll of 0
+    - VeeVee Volley's Base Power is Friendship/2.5 for a maximum of 40.8. This has been rounded to 41.
+    - Psywave Does a range of 1-150 [Level + (0-100) + 50]/100 Base Power (Implemented) with minimum damage of 1
+    - Flail has a varying BP based on current HP percentage
+    - Needs to check current HP for Eruption and Water Spout
 
 Other Special Cases
     - Hex needs to do bonus damage against paralyzed, frozen, sleeping, or burned targets
