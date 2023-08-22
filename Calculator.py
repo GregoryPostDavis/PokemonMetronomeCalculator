@@ -120,7 +120,7 @@ testSpdA = 0
 testSpeA = 0
 testCurrHpA = 100
 testNatureA = "modest"
-testAbilityA = "regenerator"
+testAbilityA = "static"
 
 bannedMoves = ["after you", "apple acid", "armor cannon", "assist", "astral barrage", "aura wheel", "baneful bunker",
                "beak blast", "behemoth bash", "behemoth blade", "belch", "bestow", "blazing torque", "body press",
@@ -214,10 +214,6 @@ poison = dict(normal=1, fire=1, water=1, grass=2, bug=1, ice=1, electric=1, flyi
 typeMatchups = dict(Normal=normal, Fire=fire, Water=water, Grass=grass, Bug=bug, Ice=ice, Electric=electric,
                     Flying=flying, Ground=ground, Rock=rock, Steel=steel, Fairy=fairy, Dragon=dragon, Psychic=psychic,
                     Ghost=ghost, Dark=dark, Fighting=fighting, Poison=poison)
-
-
-def physicalMoveCalc(Move):
-    pass
 
 
 def removeBannedMoves():
