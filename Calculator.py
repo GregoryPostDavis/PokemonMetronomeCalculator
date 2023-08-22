@@ -156,7 +156,7 @@ bannedMoves = ["after you", "apple acid", "armor cannon", "assist", "astral barr
                "v-create", "wicked blow", "wicked torque", "wide guard"]
 
 OHKO = ["fissure", "guillotine", "horn drill", "sheer cold"]
-NEVER = ["false swipe", "natures madness", "ruination", "endeavor", "super fang"]
+NEVER = ["false swipe", "natures madness", "ruination", "endeavor"]
 AutoCrit = ["flower trick", "frost breath", "storm throw", "surging strikes", "wicked blow", "zippy zap"]
 NatureList = ["hardy", "lonely", "brave", "adamant", "naughty", "bold", "docile", "relaxed", "impish", "lax", "timid",
               "hasty", "serious", "jolly", "naive", "modest", "mild", "quiet", "bashful", "rash", "calm", "sassy",
@@ -283,6 +283,11 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
     targetMAXHP = pypokedex.get(name=target.name).base_stats.hp * math.floor(pkmnBhp / 4) * target.level / 100 * \
                   target.level + 10
 
+    if move.name in "Never":  # Endeavor, False Swipe, Nature's Madness, Ruination
+        for x in range(16):
+            DamageRolls[x] = 0
+        return DamageRolls
+
     if move.power > 0:
         # print(move.moveType)
         if move.moveType in target.quarter:
@@ -396,17 +401,32 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
         return DamageRolls
     else:
         if move.name.lower() == "final gambit":
-            for x in range(16):
-                DamageRolls[x] = user.currentHP
+            if "ghost" not in target.types or user.ability.lower() == "scrappy":
+                for x in range(16):
+                    DamageRolls[x] = user.currentHP
+            else:
+                for x in range(16):
+                    DamageRolls[x] = 0
         elif move.name.lower() == "seismic toss" or move.name.lower() == "night shade":
             for x in range(16):
                 DamageRolls[x] = user.level
         elif move.name.lower() == "sonicboom" or move.name.lower() == "sonic boom":
-            for x in range(16):
-                DamageRolls[x] = 20
+            if "ghost" in target.types or target.ability.lower() == "soundproof":
+                for x in range(16):
+                    DamageRolls[x] = 0
+            else:
+                for x in range(16):
+                    DamageRolls[x] = 20
         elif move.name.lower() == "dragon rage":
+            if "fairy" in target.types:
+                for x in range(16):
+                    DamageRolls[x] = 0
+            else:
+                for x in range(16):
+                    DamageRolls[x] = 40
+        elif move.name.lower() == "super fang" or move.name.lower() == "superfang":
             for x in range(16):
-                DamageRolls[x] = 40
+                DamageRolls[x] = 1
         elif move.name.lower() == "present":
             for bp in range(1, 4):
                 # Actual Damage being Calculated
@@ -465,6 +485,56 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
                 defense = target.DEF
                 part1 = ((2 * user.level / 5) + 2)
                 part2 = (100 * target.currentHP / targetMAXHP * float(offense / defense))
+                mainMultiplier = (part1 * part2 / 50) + 2
+                Other = 1  # Technically means nothing for now
+                Ability = 1
+                if target.ability in TypeImmune:
+                    if TypeImmune.get(
+                            target.ability).lower() == move.moveType.lower() and user.ability not in IgnoreAbilities:
+                        Ability = 0
+
+                if move.moveType in target.quarter:
+                    TypeMatchup = .25
+                elif move.moveType in target.half:
+                    TypeMatchup = .5
+                elif move.moveType in target.double:
+                    TypeMatchup = 2
+                elif move.moveType in target.quad:
+                    TypeMatchup = 4
+                elif move.moveType in target.immune:
+                    TypeMatchup = 0
+                else:
+                    TypeMatchup = 1
+
+                if move.moveType not in user.types:
+                    STAB = 1
+                elif user.ability.lower == "adaptability":
+                    STAB = 2
+                else:
+                    STAB = 1.5
+
+                Critical = 1  # Deal with Crits Later
+                Weather = 1
+
+                # Burn Calculation
+                if user.status.lower() == "burn" and move.category.lower() == "physical" and user.ability.lower() != "guts":
+                    Burn = .5
+                else:
+                    Burn = 1
+
+                Targets = 1
+                PB = 1  # This will be used for Parental Bond SOON(ish)
+
+                ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(
+                    random / 100) * STAB * TypeMatchup * Burn * Ability)
+                DamageRolls.append(ThisRoll)
+        elif move.name.lower() == "wring out":
+            # Actual Damage being Calculated
+            for random in range(85, 101):
+                offense = user.ATK
+                defense = target.DEF
+                part1 = ((2 * user.level / 5) + 2)
+                part2 = (120 * target.currentHP / targetMAXHP * float(offense / defense))
                 mainMultiplier = (part1 * part2 / 50) + 2
                 Other = 1  # Technically means nothing for now
                 Ability = 1

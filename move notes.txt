@@ -1,6 +1,16 @@
 Accuracy of 200 = Cannot Miss
 Power of 0 = Does no Damage
 Power of -1 = Special Formula for Damage
+    - Dragon Rage and Supersonic do Fixed Damage (Implemented)
+    - Seismic Toss and Night Shade do damage based on Level (Implemented)
+    - Super Fang does a minimum of 1 damage, can only kill when opponent is at 1hp
+    - Nature's Madness, Ruination, Endeavor, and False Swipe are unable to kill and thus can have a damage roll of 0
+
+Other Special Cases
+    - Hex needs to do bonus damage against paralyzed, frozen, sleeping, or burned targets
+    - Venoshock needs to deal additional damage to poisoned or badly poisoned targets
 
 Need to deal with multi-hit moves
 Double Kick,  Population Bomb, Icicle Spear, Rock Blast, Tail Slap, Bullet Seed, Double Slap
+
+Need to work on crits
