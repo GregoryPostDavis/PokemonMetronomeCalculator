@@ -403,30 +403,30 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
     else:
         if move.name.lower() == "final gambit":
             if "ghost" not in target.types or user.ability.lower() == "scrappy":
-                for x in range(16):
+                for x in range(1):
                     DamageRolls[x] = user.currentHP
             else:
-                for x in range(16):
+                for x in range(1):
                     DamageRolls[x] = 0
         elif move.name.lower() == "seismic toss" or move.name.lower() == "night shade":
-            for x in range(16):
+            for x in range(1):
                 DamageRolls[x] = user.level
         elif move.name.lower() == "sonicboom" or move.name.lower() == "sonic boom":
             if "ghost" in target.types or target.ability.lower() == "soundproof":
-                for x in range(16):
+                for x in range(1):
                     DamageRolls[x] = 0
             else:
-                for x in range(16):
+                for x in range(1):
                     DamageRolls[x] = 20
         elif move.name.lower() == "dragon rage":
             if "fairy" in target.types:
-                for x in range(16):
+                for x in range(1):
                     DamageRolls[x] = 0
             else:
-                for x in range(16):
+                for x in range(1):
                     DamageRolls[x] = 40
         elif move.name.lower() == "super fang" or move.name.lower() == "superfang":
-            for x in range(16):
+            for x in range(1):
                 DamageRolls[x] = 1
         elif move.name.lower() == "present":
             for bp in range(1, 4):
