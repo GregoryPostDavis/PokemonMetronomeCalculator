@@ -13,8 +13,14 @@ Power of -1 = Special Formula for Damage
 Other Special Cases
     - Hex needs to do bonus damage against paralyzed, frozen, sleeping, or burned targets
     - Venoshock needs to deal additional damage to poisoned or badly poisoned targets
+    - Present (And Multi-Hit Moves) Need to have their '% Chance of Happening' Updated
+        - Will likely need to shift that calculation to another function that way I can call it with more flexibility
+        from where I get damage rolls
 
 Need to deal with multi-hit moves
 Double Kick,  Population Bomb, Icicle Spear, Rock Blast, Tail Slap, Bullet Seed, Double Slap
 
 Need to work on crits
+Need to implement Reflect, Light Screen, and Aurora Veil
+Need to implement items
+Need to implement Parental Bond

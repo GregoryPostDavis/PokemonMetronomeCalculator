@@ -22,7 +22,7 @@ class Pokemon:
         spdMod = 1
         speMod = 1
 
-        NoChange = ["hardy", "docile", "bashful", "quirky", "serious"]
+        noChange = ["hardy", "docile", "bashful", "quirky", "serious"]
         atkUp = ["lonely", "adamant", "naughty", "brave"]
         atkDw = ["bold", "modest", "calm", "timid"]
         defUp = ["bold", "impish", "lax", "relaxed"]
@@ -95,7 +95,7 @@ class Pokemon:
         self.ability = temp.replace(" ", "")
         self.status = "healthy"
 
-        # Figure Out Stats (Pre Stat Buffs/Nerfs)
+        # Figure Out Stats (Pre Stat Buffs/Debuffs)
         self.HP = math.floor((((2 * self.pkmn.base_stats.hp + self.hpI + (
             math.floor(self.hpE / 4))) * self.level) / 100) + self.level + 10)
         self.ATK = math.floor(((((2 * self.pkmn.base_stats.attack + self.atkI + (
@@ -121,6 +121,7 @@ testSpeA = 0
 testCurrHpA = 100
 testNatureA = "modest"
 testAbilityA = "static"
+testItemA = ""
 
 testTargetName = "mew"
 testHpB = 252
@@ -131,7 +132,8 @@ testSpdB = 0
 testSpeB = 0
 testCurrHpB = 100
 testNatureB = "modest"
-testAbilityB = "static"
+testAbilityB = "synchronize"
+testItemB = ""
 
 bannedMoves = ["after you", "apple acid", "armor cannon", "assist", "astral barrage", "aura wheel", "baneful bunker",
                "beak blast", "behemoth bash", "behemoth blade", "belch", "bestow", "blazing torque", "body press",
@@ -141,7 +143,7 @@ bannedMoves = ["after you", "apple acid", "armor cannon", "assist", "astral barr
                "double shock", "dragon ascent", "dragon energy", "drum beating", "dynamax cannon", "electro drift",
                "endure", "eternabeam", "false surrender", "feint", "fiery wrath", "fillet away", "fleur cannon",
                "focus punch", "follow me", "freeze shock", "freezing glare", "glacial lance", "grav apple",
-               "helping hand", "hold hands", "hyper drill", "hyperspace fury", "hypersspace hole", "ice burn",
+               "helping hand", "hold hands", "hyper drill", "hyperspace fury", "hyperspace hole", "ice burn",
                "instruct", "jet punch", "jungle healing", "kings shield", "life dew", "light of ruin", "make it rain",
                "magical torque", "mat block", "me first", "meteor assault", "mimic", "mind blown", "mirror coat",
                "mirror move", "moongeist beam", "nature power", "natures madness", "noxious torque", "obstruct",
