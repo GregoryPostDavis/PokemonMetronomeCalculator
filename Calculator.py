@@ -155,7 +155,7 @@ bannedMoves = ["after you", "apple acid", "armor cannon", "assist", "astral barr
                "spotlight", "steam eruption", "steel beam", "strange steam", "struggle", "sunsteel strike",
                "surging strikes", "switcheroo", "techno blast", "thief", "thousand arrows", "thousand waves",
                "thunder cage", "thunderous kick", "tidy up", "trailblaze", "transform", "trick", "twin beam",
-               "v-create", "wicked blow", "wicked torque", "wide guard"]
+               "v-create", "wicked blow", "wicked torque", "wide guard", "metronome"]
 
 OHKO = ["fissure", "guillotine", "horn drill", "sheer cold"]
 NEVER = ["false swipe", "natures madness", "ruination", "endeavor"]
@@ -280,7 +280,12 @@ def getTypeMatchups(pokemon):
 
 
 def getDamageRolls(user, move, target, currentWeather, glaive):
-    DamageRolls = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    DamageRolls = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+    if move.name in OHKO:
+        for x in range(16):
+            DamageRolls[x] = 9999
+        return DamageRolls
 
     targetMAXHP = pypokedex.get(name=target.name).base_stats.hp * math.floor(pkmnBhp / 4) * target.level / 100 * \
                   target.level + 10
@@ -304,11 +309,6 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             TypeMatchup = 0
         else:
             TypeMatchup = 1
-
-        if move.name in OHKO:
-            for x in range(16):
-                DamageRolls[x] = 9999
-            return DamageRolls
 
         if move.category.lower() == "physical":
             offense = user.ATK
@@ -380,9 +380,6 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
                 STAB = 2
             else:
                 STAB = 1.5
-            if random == 100:
-                # print(move.moveType, user.types, STAB)
-                pass
 
             if target.ability.lower() == "bulletproof":
                 if move.name in Bulletproof:
@@ -396,9 +393,10 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
 
             ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(
                 random / 100) * STAB * TypeMatchup * Burn * Ability)
-            if random == 100:
-                # print(move.name + ":", mainMultiplier, Targets,PB,Weather,glaive,Critical, float(random/100), STAB, TypeMatchup, Burn)
-                pass
+
+            # if random == 100:
+            #     print(move.name + ":", mainMultiplier, Targets,PB,Weather,glaive,Critical, float(random/100), STAB, TypeMatchup, Burn)
+
             DamageRolls[random - 85] = ThisRoll
 
         return DamageRolls
@@ -441,6 +439,7 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
                     mainMultiplier = (part1 * part2 / 50) + 2
                     Other = 1  # Technically means nothing for now
                     Ability = 1
+
                     if target.ability in TypeImmune:
                         if TypeImmune.get(
                                 target.ability).lower() == move.moveType.lower() and user.ability not in IgnoreAbilities:
@@ -942,7 +941,7 @@ while True:
         break
     else:
         currHPB = input("Please Enter the Current HP Percentage ")
-        if 1 <= 100:
+        if 1 <= int(currHPB) <= 100:
             break
         else:
             print("HP fell outside of the allowed range ")
@@ -1001,7 +1000,7 @@ denominator = 0
 
 for moves in MoveList:
     Rolls = getDamageRolls(pokemonA, moves, pokemonB, "none", 1)
-    # print(moves.name, Rolls[15])
+    print(moves.name, Rolls)
     for roll in Rolls:
         if roll >= pokemonB.currentHP:
             KillingRolls = KillingRolls + 1
