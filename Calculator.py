@@ -227,6 +227,9 @@ poison = dict(normal=1, fire=1, water=1, grass=2, bug=1, ice=1, electric=1, flyi
 typeMatchups = dict(Normal=normal, Fire=fire, Water=water, Grass=grass, Bug=bug, Ice=ice, Electric=electric,
                     Flying=flying, Ground=ground, Rock=rock, Steel=steel, Fairy=fairy, Dragon=dragon, Psychic=psychic,
                     Ghost=ghost, Dark=dark, Fighting=fighting, Poison=poison)
+resistBerry = dict(babiri='steel', charti='rock', chilan='normal', chople='fighting', coba='flying', colbur='dark',
+                   haban='dragon', kasib='ghost', kebia='poison', passho='water', payapa='psychic', rindo='grass',
+                   roseli='fairy', shuca='ground', tanga='bug', wacan='electric', yache='ice')
 
 
 def removeBannedMoves():
@@ -298,14 +301,22 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             DamageRolls = [0]
         return DamageRolls
 
+    #Berry Calculation
+
+    #End Berry Calculation
+
     # This never changes START
 
     if move.category.lower() == "physical":
         offense = user.ATK
         defense = target.DEF
+        if user.item.lower() == "choice band" or user.item.lower() == "choiceband":
+            offense = offense * 1.5
         # print(move.name, "ATK", user.ATK, target.DEF)
     elif move.category.lower() == "special":
         offense = user.SPA
+        if user.item.lower() == "choice specs" or user.item.lower() == "choicespecs":
+            offense = offense * 1.5
         if move.name.lower() == "psyshock":
             defense = target.DEF
             # print(move.name, "SPATK", user.SPA, target.DEF)
@@ -316,7 +327,8 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
         DamageRolls = [0]
         return DamageRolls
 
-    Other = 1  # Technically means nothing for now
+
+
     Ability = 1
     if target.ability in TypeImmune:
         if TypeImmune.get(
@@ -386,6 +398,15 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
     else:
         TypeMatchup = 1
 
+    if user.item.lower() == "life orb" or user.item.lower() == "lifeorb":
+        Other = 5324 / 4096
+    elif user.item.lower() == "expert belt" or user.item.lower() == "expertbelt":
+        if TypeMatchup > 1:
+            Other = 4915 / 4096
+        else:
+            Other = 1
+    else:
+        Other = 1
     # This should never change END
 
     if move.power > 0:
@@ -488,15 +509,15 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             # 100 BP if HP > 10.42
             # 150 BP if HP > 04.17
             # 200 BP Otherwise
-            if user.currentHP/user.HP > .6875:
+            if user.currentHP / user.HP > .6875:
                 bp = 20
-            elif user.currentHP/user.HP > .3542:
+            elif user.currentHP / user.HP > .3542:
                 bp = 40
-            elif user.currentHP/user.HP > .2083:
+            elif user.currentHP / user.HP > .2083:
                 bp = 80
-            elif user.currentHP/user.HP > .1042:
+            elif user.currentHP / user.HP > .1042:
                 bp = 100
-            elif user.currentHP/user.HP > .0417:
+            elif user.currentHP / user.HP > .0417:
                 bp = 150
             else:
                 bp = 200
@@ -878,7 +899,7 @@ denominator = 0
 
 for moves in MoveList:
     Rolls = getDamageRolls(pokemonA, moves, pokemonB, "none", 1)
-    #print(moves.name, Rolls)
+    # print(moves.name, Rolls)
     for roll in Rolls:
         if roll >= pokemonB.currentHP:
             KillingRolls = KillingRolls + 1
@@ -892,6 +913,8 @@ print("winning rolls", KillingRolls)
 print("losing rolls", LosingRolls)
 num = float(numerator / denominator) * 100
 print(num, "%")
+
+print(resistBerry.get("babiri"))
 
 # moonblast = Move("moonblast", "fairy", "special", 95, 100)
 # Rolls = getDamageRolls(pokemonA, moonblast, pokemonB, "none", 1)
