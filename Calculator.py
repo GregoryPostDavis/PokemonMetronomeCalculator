@@ -13,63 +13,7 @@ class Move:
 
 
 class Pokemon:
-    def __init__(self, name, level, hpEV, atkEV, defEV, spaEV, spdEV, speEV, nature, currentHP, ability):
-
-        # Nature Things
-        atkMod = 1
-        defMod = 1
-        spaMod = 1
-        spdMod = 1
-        speMod = 1
-
-        noChange = ["hardy", "docile", "bashful", "quirky", "serious"]
-        atkUp = ["lonely", "adamant", "naughty", "brave"]
-        atkDw = ["bold", "modest", "calm", "timid"]
-        defUp = ["bold", "impish", "lax", "relaxed"]
-        defDw = ["lonely", "mild", "gentle", "hasty"]
-        spaUp = ["modest", "mild", "rash", "quiet"]
-        spaDw = ["adamant", "impish", "careful", "jolly"]
-        spdUp = ["calm", "gentle", "careful", "sassy"]
-        spdDw = ["naughty", "lax", "rash", "naive"]
-        speUp = ["timid", "hasty", "jolly", "naive"]
-        speDw = ["brave", "relaxed", "quiet", "sassy"]
-
-        if nature in atkUp:
-            atkMod = 1.1
-        elif nature in atkDw:
-            atkMod = 0.9
-        else:
-            atkMod = 1
-
-        if nature in defUp:
-            defMod = 1.1
-        elif nature in defDw:
-            defMod = 0.9
-        else:
-            defMod = 1
-
-        if nature in spaUp:
-            spaMod = 1.1
-        elif nature in spaDw:
-            spaMod = 0.9
-        else:
-            spaMod = 1
-
-        if nature in spdUp:
-            spdMod = 1.1
-        elif nature in spdDw:
-            spdMod = 0.9
-        else:
-            spdMod = 1
-
-        if nature in speUp:
-            speMod = 1.1
-        elif nature in speDw:
-            speMod = 0.9
-        else:
-            speMod = 1
-
-        # End Nature Things
+    def __init__(self, name, level, hpEV, atkEV, defEV, spaEV, spdEV, speEV, nature, currentHP, ability, item):
 
         self.name = name
         self.level = level
@@ -88,12 +32,15 @@ class Pokemon:
         self.speI = 31
         self.pkmn = pypokedex.get(name=self.name)
         self.types = self.pkmn.types
+        self.item = item
 
         self.quarter, self.half, self.neutral, self.double, self.quad, self.immune, self.error = getTypeMatchups(
             self.pkmn)
         temp = ability
         self.ability = temp.replace(" ", "")
         self.status = "healthy"
+
+        [atkMod, defMod, spaMod, spdMod, speMod] = NatureList.get(nature.lower())
 
         # Figure Out Stats (Pre Stat Buffs/Debuffs)
         self.HP = math.floor((((2 * self.pkmn.base_stats.hp + self.hpI + (
@@ -160,9 +107,14 @@ bannedMoves = ["after you", "apple acid", "armor cannon", "assist", "astral barr
 OHKO = ["fissure", "guillotine", "horn drill", "sheer cold"]
 NEVER = ["false swipe", "natures madness", "ruination", "endeavor"]
 AutoCrit = ["flower trick", "frost breath", "storm throw", "surging strikes", "wicked blow", "zippy zap"]
-NatureList = ["hardy", "lonely", "brave", "adamant", "naughty", "bold", "docile", "relaxed", "impish", "lax", "timid",
-              "hasty", "serious", "jolly", "naive", "modest", "mild", "quiet", "bashful", "rash", "calm", "sassy",
-              "gentle", "careful", "quirky"]
+            # Attack Defense SpAtk SpDef Speed
+NatureList = dict(hardy=[1, 1, 1, 1, 1], lonely=[1.1, .9, 1, 1, 1], brave=[1.1, 1, 1, 1, .9], adamant=[1.1, 1, .9, 1, 1],
+                  naughty=[1.1, 1, 1, 1, 1], bold=[.9, 1.1, 1, 1, 1], docile=[1, 1, 1, 1, 1], relaxed=[1, 1.1, 1, 1, .9],
+                  impish=[1, 1.1, .9, 1, 1], lax=[1, 1.1, 1, 1, 1], timid=[.9, 1, 1, 1, 1.1], hasty=[1, .9, 1, 1, 1.1],
+                  serious=[1, 1, 1, 1, 1], jolly=[1, 1, 1, .9, 1.1], naive=[1, 1, 1, 1, 1.1], modest=[.9, 1, 1.1, 1, 1],
+                  mild=[1, .9, 1.1, 1, 1], quiet=[1, 1, 1.1, 1, .9], bashful=[1, 1, 1, 1, 1], rash=[1, 1, 1.1, 1, 1],
+                  calm=[.9, 1, 1, 1.1, 1], sassy=[1, 1, 1, 1.1, .9], gentle=[1, .9, 1, 1.1, 1], careful=[1, 1, .9, 1.1, 1],
+                  quirky=[1, 1, 1, 1, 1])
 Bulletproof = ["acid spray", "aura sphere", "barrage", "beak blast", "bullet seed", "egg bomb", "electro ball",
                "energy ball", "focus blast", "gyro ball", "ice ball", "magnet bomb", "mist ball", "mud bomb",
                "octazooka", "pollen puff", "pyro ball", "rock blast", "rock wrecker", "searing shot", "seed bomb",
@@ -301,9 +253,9 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             DamageRolls = [0]
         return DamageRolls
 
-    #Berry Calculation
+    # Berry Calculation
 
-    #End Berry Calculation
+    # End Berry Calculation
 
     # This never changes START
 
@@ -326,8 +278,6 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
     elif move.category.lower() == "status":
         DamageRolls = [0]
         return DamageRolls
-
-
 
     Ability = 1
     if target.ability in TypeImmune:
@@ -704,8 +654,16 @@ while True:
         abilityA = input("Please Enter the Ability ").lower()
     break
 
+# Get Item A
+while True:
+    if Testing:
+        itemA = testItemA
+    else:
+        itemA = input("Please Enter the Item").lower()
+    break
+
 pokemonA = Pokemon(userIn, pkmnAlvl, pkmnAhp, pkmnAatk, pkmnAdef, pkmnAspa, pkmnAspd, pkmnAspe, pkmnAnat, currHP,
-                   abilityA)
+                   abilityA, itemA)
 
 # Get Pokemon B
 while True:
@@ -866,8 +824,16 @@ while True:
         abilityB = input("Please Enter the Ability ").lower()
         break
 
+# Get Item B
+while True:
+    if Testing:
+        itemB = testItemB
+    else:
+        itemB = input("Please Enter the Item").lower()
+    break
+
 pokemonB = Pokemon(userIn, pkmnBlvl, pkmnBhp, pkmnBatk, pkmnBdef, pkmnBspa, pkmnBspd, pkmnBspe, pkmnBnat, currHPB,
-                   abilityB)
+                   abilityB, itemB)
 # Finally Correct Current HP math
 varA = pypokedex.get(name=userIn).base_stats.hp
 varB = math.floor(pkmnBhp / 4)
