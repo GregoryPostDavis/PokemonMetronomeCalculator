@@ -357,6 +357,11 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             Other = 1
     else:
         Other = 1
+
+    targetItem = target.item
+    targetItem = targetItem.replace("berry", "")
+    if move.moveType == resistBerry.get(targetItem):
+        Other = Other * .5
     # This should never change END
 
     if move.power > 0:
