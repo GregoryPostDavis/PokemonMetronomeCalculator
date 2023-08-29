@@ -14,7 +14,6 @@ class Move:
 
 class Pokemon:
     def __init__(self, name, level, hpEV, atkEV, defEV, spaEV, spdEV, speEV, nature, currentHP, ability, item):
-
         self.name = name
         self.level = level
         self.currentHP = currentHP
@@ -107,13 +106,16 @@ bannedMoves = ["after you", "apple acid", "armor cannon", "assist", "astral barr
 OHKO = ["fissure", "guillotine", "horn drill", "sheer cold"]
 NEVER = ["false swipe", "natures madness", "ruination", "endeavor"]
 AutoCrit = ["flower trick", "frost breath", "storm throw", "surging strikes", "wicked blow", "zippy zap"]
-            # Attack Defense SpAtk SpDef Speed
-NatureList = dict(hardy=[1, 1, 1, 1, 1], lonely=[1.1, .9, 1, 1, 1], brave=[1.1, 1, 1, 1, .9], adamant=[1.1, 1, .9, 1, 1],
-                  naughty=[1.1, 1, 1, 1, 1], bold=[.9, 1.1, 1, 1, 1], docile=[1, 1, 1, 1, 1], relaxed=[1, 1.1, 1, 1, .9],
+# Attack Defense SpAtk SpDef Speed
+NatureList = dict(hardy=[1, 1, 1, 1, 1], lonely=[1.1, .9, 1, 1, 1], brave=[1.1, 1, 1, 1, .9],
+                  adamant=[1.1, 1, .9, 1, 1],
+                  naughty=[1.1, 1, 1, 1, 1], bold=[.9, 1.1, 1, 1, 1], docile=[1, 1, 1, 1, 1],
+                  relaxed=[1, 1.1, 1, 1, .9],
                   impish=[1, 1.1, .9, 1, 1], lax=[1, 1.1, 1, 1, 1], timid=[.9, 1, 1, 1, 1.1], hasty=[1, .9, 1, 1, 1.1],
                   serious=[1, 1, 1, 1, 1], jolly=[1, 1, 1, .9, 1.1], naive=[1, 1, 1, 1, 1.1], modest=[.9, 1, 1.1, 1, 1],
                   mild=[1, .9, 1.1, 1, 1], quiet=[1, 1, 1.1, 1, .9], bashful=[1, 1, 1, 1, 1], rash=[1, 1, 1.1, 1, 1],
-                  calm=[.9, 1, 1, 1.1, 1], sassy=[1, 1, 1, 1.1, .9], gentle=[1, .9, 1, 1.1, 1], careful=[1, 1, .9, 1.1, 1],
+                  calm=[.9, 1, 1, 1.1, 1], sassy=[1, 1, 1, 1.1, .9], gentle=[1, .9, 1, 1.1, 1],
+                  careful=[1, 1, .9, 1.1, 1],
                   quirky=[1, 1, 1, 1, 1])
 Bulletproof = ["acid spray", "aura sphere", "barrage", "beak blast", "bullet seed", "egg bomb", "electro ball",
                "energy ball", "focus blast", "gyro ball", "ice ball", "magnet bomb", "mist ball", "mud bomb",
@@ -256,28 +258,21 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             DamageRolls = [0]
         return DamageRolls
 
-    # Berry Calculation
-
-    # End Berry Calculation
-
-    # This never changes START
+    # Shared Functionality START
 
     if move.category.lower() == "physical":
         offense = user.ATK
         defense = target.DEF
         if user.item.lower() == "choice band" or user.item.lower() == "choiceband":
             offense = offense * 1.5
-        # print(move.name, "ATK", user.ATK, target.DEF)
     elif move.category.lower() == "special":
         offense = user.SPA
         if user.item.lower() == "choice specs" or user.item.lower() == "choicespecs":
             offense = offense * 1.5
         if move.name.lower() == "psyshock":
             defense = target.DEF
-            # print(move.name, "SPATK", user.SPA, target.DEF)
         else:
             defense = target.SPD
-            # print(move.name, "SPATK", user.SPA, target.SPD)
     elif move.category.lower() == "status":
         DamageRolls = [0]
         return DamageRolls
@@ -287,7 +282,6 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
         if TypeImmune.get(
                 target.ability).lower() == move.moveType.lower() and user.ability not in IgnoreAbilities:
             Ability = 0
-            # print("immune through ability")
 
     Targets = 1
     PB = 1  # This will be used for Parental Bond SOON(ish)
@@ -368,7 +362,7 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             Other = Other * .25
         else:
             Other = Other * .5
-    # This should never change END
+    # Shared Functionality END
 
     if move.power > 0:
         # print(move.moveType)
