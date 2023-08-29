@@ -183,6 +183,9 @@ resistBerry = dict(babiri='steel', charti='rock', chilan='normal', chople='fight
                    haban='dragon', kasib='ghost', kebia='poison', passho='water', payapa='psychic', rindo='grass',
                    roseli='fairy', shuca='ground', tanga='bug', wacan='electric', yache='ice')
 
+minimizeVulnerabilty = ["body slam", "stomp", "dragon rush", "steamroller", "heat crash", " heavy slam", "flying press",
+                        "malicious moonsault"]
+
 
 def removeBannedMoves():
     for entries in MoveList:
