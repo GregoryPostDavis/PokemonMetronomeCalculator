@@ -184,6 +184,18 @@ typeMatchups = dict(Normal=normal, Fire=fire, Water=water, Grass=grass, Bug=bug,
 resistBerry = dict(babiri='steel', charti='rock', chilan='normal', chople='fighting', coba='flying', colbur='dark',
                    haban='dragon', kasib='ghost', kebia='poison', passho='water', payapa='psychic', rindo='grass',
                    roseli='fairy', shuca='ground', tanga='bug', wacan='electric', yache='ice')
+typeEnhanceItem = dict(blackbelt='fighting', blackglasses='dark', charcoal='fire', dragonfang='dragon',
+                       hardstone='rock',
+                       magnet='electric', metalcoat='steel', miracleseed='grass', mysticwater='water',
+                       nevermeltice='ice',
+                       poisonbarb='poison', sharpbeak='flying', silkscarf='normal', silverpoweder='bug',
+                       softsand='ground',
+                       spelltag='ghost', twistedspoon='psychic')
+plates = dict(blank='normal', draco='dragon', dread='dark', earth='ground', fist='fighting', flame='fire', icicle='ice',
+              insect='bug', iron='steel', meadow='grass', mind='psychic', pixie='fairy', sky='flying', splash='water',
+              spooky='ghost', stone='rock', toxic='poison', zap='electric')
+
+incense = dict(odd='psychic', rock='rock', rose='grass', sea='water', wave='water')
 
 minimizeVulnerabilty = ["body slam", "stomp", "dragon rush", "steamroller", "heat crash", " heavy slam", "flying press",
                         "malicious moonsault"]
@@ -362,6 +374,12 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             Other = Other * .25
         else:
             Other = Other * .5
+
+    if "incense" in user.item.lower():
+        user.item = user.item.lower().replace(" incense")
+        if move.moveType == incense.get(user.item):
+            Other = Other * 1.2
+
     # Shared Functionality END
 
     if move.power > 0:
