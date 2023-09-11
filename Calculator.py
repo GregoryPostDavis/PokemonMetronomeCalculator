@@ -357,6 +357,8 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
     else:
         TypeMatchup = 1
 
+    #User Held Items
+    Other = 1
     if user.item.lower() == "life orb" or user.item.lower() == "lifeorb":
         Other = 5324 / 4096
     elif user.item.lower() == "expert belt" or user.item.lower() == "expertbelt":
@@ -364,9 +366,16 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             Other = 4915 / 4096
         else:
             Other = 1
-    else:
-        Other = 1
+    elif "incense" in user.item.lower():
+        user.item = user.item.lower().replace(" incense", "")
+        if move.moveType == incense.get(user.item):
+            Other = Other * 1.2
+    elif "plate" in user.item.lower():
+        user.item = user.item.lower().replace(" plate", "")
+        if move.moveType == plates.get(user.item):
+            Other = Other * 1.2
 
+    #Opponent Other Modificaton (Bereries)
     targetItem = target.item
     targetItem = targetItem.replace("berry", "")
     if move.moveType == resistBerry.get(targetItem):
@@ -375,7 +384,7 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
         else:
             Other = Other * .5
 
-    if "incense" in user.item.lower():
+    elif "incense" in user.item.lower():
         user.item = user.item.lower().replace(" incense", "")
         if move.moveType == incense.get(user.item):
             Other = Other * 1.2
@@ -383,8 +392,6 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
         user.item = user.item.lower().replace(" plate", "")
         if move.moveType == plates.get(user.item):
             Other = Other * 1.2
-        else:
-            Other = 1
 
     # Shared Functionality END
 
