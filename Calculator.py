@@ -394,8 +394,8 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             ThisRoll = math.floor(mainMultiplier * Targets * PB * Weather * glaive * Critical * float(
                 random / 100) * STAB * TypeMatchup * Burn * Ability)
 
-            # if random == 100:
-            #     print(move.name + ":", mainMultiplier, Targets,PB,Weather,glaive,Critical, float(random/100), STAB, TypeMatchup, Burn)
+            # if random == 100: print(move.name + ":", mainMultiplier, Targets,PB,Weather,glaive,Critical,
+            # float(random/100), STAB, TypeMatchup, Burn)
 
             DamageRolls[random - 85] = ThisRoll
 
