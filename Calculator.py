@@ -277,6 +277,8 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
         defense = target.DEF
         if user.item.lower() == "choice band" or user.item.lower() == "choiceband":
             offense = offense * 1.5
+        elif user.item.lower() == "muscle band" or user.item.lower() == "muscleband":
+            offense = offense * 1.1
     elif move.category.lower() == "special":
         offense = user.SPA
         if user.item.lower() == "choice specs" or user.item.lower() == "choicespecs":
