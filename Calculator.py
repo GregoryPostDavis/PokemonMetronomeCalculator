@@ -376,9 +376,15 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             Other = Other * .5
 
     if "incense" in user.item.lower():
-        user.item = user.item.lower().replace(" incense")
+        user.item = user.item.lower().replace(" incense", "")
         if move.moveType == incense.get(user.item):
             Other = Other * 1.2
+    elif "plate" in user.item.lower():
+        user.item = user.item.lower().replace(" plate", "")
+        if move.moveType == plates.get(user.item):
+            Other = Other * 1.2
+        else:
+            Other = 1
 
     # Shared Functionality END
 
