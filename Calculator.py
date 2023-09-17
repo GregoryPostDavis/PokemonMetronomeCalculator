@@ -185,12 +185,10 @@ resistBerry = dict(babiri='steel', charti='rock', chilan='normal', chople='fight
                    haban='dragon', kasib='ghost', kebia='poison', passho='water', payapa='psychic', rindo='grass',
                    roseli='fairy', shuca='ground', tanga='bug', wacan='electric', yache='ice')
 typeEnhanceItem = dict(blackbelt='fighting', blackglasses='dark', charcoal='fire', dragonfang='dragon',
-                       hardstone='rock',
-                       magnet='electric', metalcoat='steel', miracleseed='grass', mysticwater='water',
-                       nevermeltice='ice',
-                       poisonbarb='poison', sharpbeak='flying', silkscarf='normal', silverpoweder='bug',
-                       softsand='ground',
-                       spelltag='ghost', twistedspoon='psychic')
+                       hardstone='rock', magnet='electric', metalcoat='steel', miracleseed='grass', mysticwater='water',
+                       nevermeltice='ice', poisonbarb='poison', sharpbeak='flying', silkscarf='normal',
+                       silverpoweder='bug', softsand='ground', spelltag='ghost', twistedspoon='psychic',
+                       fairyfeather='fairy')
 plates = dict(blank='normal', draco='dragon', dread='dark', earth='ground', fist='fighting', flame='fire', icicle='ice',
               insect='bug', iron='steel', meadow='grass', mind='psychic', pixie='fairy', sky='flying', splash='water',
               spooky='ghost', stone='rock', toxic='poison', zap='electric')
@@ -359,7 +357,7 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
     else:
         TypeMatchup = 1
 
-    #User Held Items
+    # User Held Items
     Other = 1
     if user.item.lower() == "life orb" or user.item.lower() == "lifeorb":
         Other = 5324 / 4096
@@ -377,7 +375,7 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
         if move.moveType == plates.get(user.item):
             Other = Other * 1.2
 
-    #Opponent Other Modificaton (Bereries)
+    # Opponent Other Modificaton (Bereries)
     targetItem = target.item
     targetItem = targetItem.replace("berry", "")
     if move.moveType == resistBerry.get(targetItem):
