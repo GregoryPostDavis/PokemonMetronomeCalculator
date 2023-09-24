@@ -4,15 +4,19 @@ import pypokedex
 import PySimpleGUI as sg
 
 ###-GUI-Setup-###
-layout = [[sg.Text("This is a Metronome Calculator")], [sg.Button("Run")]]
+layout = [[sg.Text("This is a Metronome Calculator")], [sg.Button("Default"),sg.Button("Custom")]]
 window = sg.Window("Test", layout)
 
 while True:
     event, values = window.read()
-    if event == "Run" or event == sg.WIN_CLOSED:
+    print(event)
+    if event == "Default" or event == sg.WIN_CLOSED:
+        window.close()
         break
+    elif event == "Custom":
+        print("DO NOTHING")
 
-    window.close()
+
 
 
 #################
