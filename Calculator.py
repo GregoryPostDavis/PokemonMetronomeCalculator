@@ -1,6 +1,25 @@
 import csv
 import math
 import pypokedex
+import PySimpleGUI as sg
+
+###-GUI-Setup-###
+layout = [[sg.Text("This is a Metronome Calculator")], [sg.Button("Default"),sg.Button("Custom")]]
+window = sg.Window("Test", layout)
+
+while True:
+    event, values = window.read()
+    print(event)
+    if event == "Default" or event == sg.WIN_CLOSED:
+        window.close()
+        break
+    elif event == "Custom":
+        print("DO NOTHING")
+
+
+
+
+#################
 
 
 class Move:
@@ -68,6 +87,7 @@ testCurrHpA = 100
 testNatureA = "modest"
 testAbilityA = "static"
 testItemA = ""
+pokemonA = None
 
 testTargetName = "mew"
 testHpB = 252
@@ -80,6 +100,7 @@ testCurrHpB = 100
 testNatureB = "modest"
 testAbilityB = "synchronize"
 testItemB = ""
+pokemonB = None
 
 bannedMoves = ["after you", "apple acid", "armor cannon", "assist", "astral barrage", "aura wheel", "baneful bunker",
                "beak blast", "behemoth bash", "behemoth blade", "belch", "bestow", "blazing torque", "body press",
@@ -257,8 +278,11 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             DamageRolls[x] = 9999
         return DamageRolls
 
-    targetMAXHP = pypokedex.get(name=target.name).base_stats.hp * math.floor(pkmnBhp / 4) * target.level / 100 * \
-                  target.level + 10
+    # targetMAXHP = pypokedex.get(name=target.name).base_stats.hp * math.floor(target.hpE / 4) * target.level / 100 * \
+    #               target.level + 10
+    targetMAXHP = (
+                (2 * pypokedex.get(name=target.name).base_stats.hp + target.hpI + (target.hpE / 4) * target.level / 100)
+                + target.level + 10)
 
     if move.name in "Never":  # Endeavor, False Swipe, Nature's Madness, Ruination
         if move.name.lower() == "false swipe":
@@ -530,403 +554,391 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
 
 
 # Get Pokemon A
-while True:
-    if Testing:
-        userIn = testPokemonName
-        pkmnA = pypokedex.get(name=userIn)
-        break
-    else:
-        try:
-            userIn = input("Enter a Pokemon: ").lower()
+def getPokemonA():
+    while True:
+        if Testing:
+            userIn = testPokemonName
             pkmnA = pypokedex.get(name=userIn)
             break
-        except:
-            print("Something went wrong, try again ")
+        else:
+            try:
+                userIn = input("Enter a Pokemon: ").lower()
+                pkmnA = pypokedex.get(name=userIn)
+                break
+            except:
+                print("Something went wrong, try again ")
 
-# Get Level A
-while True:
-    if Testing:
-        pkmnAlvl = 100
-        break
-    else:
-        try:
-            pkmnAlvl = input("Please Enter the Pokemon's Level ")
-            if 1 <= int(pkmnAlvl) <= 100:
-                pkmnAlvl = int(pkmnAlvl)
+    # Get Level A
+    while True:
+        if Testing:
+            pkmnAlvl = 100
+            break
+        else:
+            try:
+                pkmnAlvl = input("Please Enter the Pokemon's Level ")
+                if 1 <= int(pkmnAlvl) <= 100:
+                    pkmnAlvl = int(pkmnAlvl)
+                    break
+                else:
+                    print("Level fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
+
+    # Get HP EVs A
+    while True:
+        if Testing:
+            pkmnAhp = testHpA
+            break
+        else:
+            try:
+                pkmnAhp = input("Please Enter the HP EVs ")
+                if 0 <= int(pkmnAhp) <= 252:
+                    pkmnAhp = int(pkmnAhp)
+                    break
+                else:
+                    print("EVs fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
+
+    # Get Attack EVs A
+    while True:
+        if Testing:
+            pkmnAatk = testAtkA
+            break
+        else:
+            try:
+                pkmnAatk = input("Please Enter the Attack EVs ")
+                if 0 <= int(pkmnAatk) <= 252:
+                    pkmnAatk = int(pkmnAatk)
+                    break
+                else:
+                    print("EVs fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
+
+    # Get Defense EVs A
+    while True:
+        if Testing:
+            pkmnAdef = testDefA
+            break
+        else:
+            try:
+                pkmnAdef = input("Please Enter the Defense EVs ")
+                if 0 <= int(pkmnAdef) <= 252:
+                    pkmnAdef = int(pkmnAdef)
+                    break
+                else:
+                    print("EVs fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
+
+    # Get Special Attack EVs A
+    while True:
+        if Testing:
+            pkmnAspa = testSpaA
+            break
+        else:
+            try:
+                pkmnAspa = input("Please Enter the Special Attack EVs ")
+                if 0 <= int(pkmnAspa) <= 252:
+                    pkmnAspa = int(pkmnAspa)
+                    break
+                else:
+                    print("EVs fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
+
+    # Get Special Defense EVs A
+    while True:
+        if Testing:
+            pkmnAspd = testSpdA
+            break
+        else:
+            try:
+                pkmnAspd = input("Please Enter the Special Defense EVs ")
+                if 0 <= int(pkmnAspd) <= 252:
+                    pkmnAspd = int(pkmnAspd)
+                    break
+                else:
+                    print("EVs fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
+
+    # Get Speed EVs A
+    while True:
+        if Testing:
+            pkmnAspe = testSpeA
+            break
+        else:
+            try:
+                pkmnAspe = input("Please Enter the Speed EVs ")
+                if 0 <= int(pkmnAspe) <= 252:
+                    pkmnAspe = int(pkmnAspe)
+                    break
+                else:
+                    print("EVs fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
+
+    # Get Current HP A
+    while True:
+        if Testing:
+            currHP = testCurrHpA
+            break
+        else:
+            try:
+                currHP = input("Please Enter the Current HP ")
+                if 0 <= int(currHP) <= math.floor(
+                        (((2 * int(pkmnA.base_stats.hp) + 31 + (math.floor(int(pkmnAhp) / 4))) * int(
+                            pkmnAlvl)) / 100) + int(
+                            pkmnAlvl) + 10):
+                    break
+                else:
+                    print("HP fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
+
+    # Get Nature A
+    while True:
+        if Testing:
+            pkmnAnat = testNatureA
+            break
+        else:
+            pkmnAnat = input("Please Enter the Nature ").lower()
+            if pkmnAnat in NatureList:
                 break
             else:
-                print("Level fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
+                print("No such nature exists")
 
-# Get HP EVs A
-while True:
-    if Testing:
-        pkmnAhp = testHpA
+    # Get Ability A
+    while True:
+        if Testing:
+            abilityA = testAbilityA
+        else:
+            abilityA = input("Please Enter the Ability ").lower()
         break
-    else:
-        try:
-            pkmnAhp = input("Please Enter the HP EVs ")
-            if 0 <= int(pkmnAhp) <= 252:
-                pkmnAhp = int(pkmnAhp)
+
+    # Get Item A
+    while True:
+        if Testing:
+            itemA = testItemA
+        else:
+            itemA = input("Please Enter the Item").lower()
+        break
+
+    pokemonA = Pokemon(userIn, pkmnAlvl, pkmnAhp, pkmnAatk, pkmnAdef, pkmnAspa, pkmnAspd, pkmnAspe, pkmnAnat, currHP,
+                       abilityA, itemA)
+    return pokemonA
+
+
+def getPokemonB():
+    # Get Pokemon B
+    while True:
+        if Testing:
+            userIn = testTargetName
+            pkmnB = pypokedex.get(name=userIn)
+            break
+        else:
+            try:
+                userIn = input("Enter a Pokemon: ").lower()
+                pkmnB = pypokedex.get(name=userIn)
                 break
-            else:
-                print("EVs fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
+            except:
+                print("Something went wrong, try again ")
 
-# Get Attack EVs A
-while True:
-    if Testing:
-        pkmnAatk = testAtkA
-        break
-    else:
-        try:
-            pkmnAatk = input("Please Enter the Attack EVs ")
-            if 0 <= int(pkmnAatk) <= 252:
-                pkmnAatk = int(pkmnAatk)
-                break
-            else:
-                print("EVs fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
+    # Get Level B
+    while True:
+        if Testing:
+            pkmnBlvl = 100
+            break
+        else:
+            try:
+                pkmnBlvl = input("Please Enter the Pokemon's Level ")
+                if 1 <= int(pkmnBlvl) <= 100:
+                    pkmnBlvl = int(pkmnBlvl)
+                    break
+                else:
+                    print("Level fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
 
-# Get Defense EVs A
-while True:
-    if Testing:
-        pkmnAdef = testDefA
-        break
-    else:
-        try:
-            pkmnAdef = input("Please Enter the Defense EVs ")
-            if 0 <= int(pkmnAdef) <= 252:
-                pkmnAdef = int(pkmnAdef)
-                break
-            else:
-                print("EVs fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
+    # Get HP EVs B
+    while True:
+        if Testing:
+            pkmnBhp = testHpB
+            break
+        else:
+            try:
+                pkmnBhp = input("Please Enter the HP EVs ")
+                if 0 <= int(pkmnBhp) <= 252:
+                    pkmnBhp = int(pkmnBhp)
+                    break
+                else:
+                    print("EVs fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
 
-# Get Special Attack EVs A
-while True:
-    if Testing:
-        pkmnAspa = testSpaA
-        break
-    else:
-        try:
-            pkmnAspa = input("Please Enter the Special Attack EVs ")
-            if 0 <= int(pkmnAspa) <= 252:
-                pkmnAspa = int(pkmnAspa)
-                break
-            else:
-                print("EVs fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
+    # Get Attack EVs B
+    while True:
+        if Testing:
+            pkmnBatk = testAtkB
+            break
+        else:
+            try:
+                pkmnBatk = input("Please Enter the Attack EVs ")
+                if 0 <= int(pkmnBatk) <= 252:
+                    pkmnBatk = int(pkmnBatk)
+                    break
+                else:
+                    print("EVs fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
 
-# Get Special Defense EVs A
-while True:
-    if Testing:
-        pkmnAspd = testSpdA
-        break
-    else:
-        try:
-            pkmnAspd = input("Please Enter the Special Defense EVs ")
-            if 0 <= int(pkmnAspd) <= 252:
-                pkmnAspd = int(pkmnAspd)
-                break
-            else:
-                print("EVs fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
+    # Get Defense EVs B
+    while True:
+        if Testing:
+            pkmnBdef = testDefB
+            break
+        else:
+            try:
+                pkmnBdef = input("Please Enter the Defense EVs ")
+                if 0 <= int(pkmnBdef) <= 252:
+                    pkmnBdef = int(pkmnBdef)
+                    break
+                else:
+                    print("EVs fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
 
-# Get Speed EVs A
-while True:
-    if Testing:
-        pkmnAspe = testSpeA
-        break
-    else:
-        try:
-            pkmnAspe = input("Please Enter the Speed EVs ")
-            if 0 <= int(pkmnAspe) <= 252:
-                pkmnAspe = int(pkmnAspe)
-                break
-            else:
-                print("EVs fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
+    # Get Special Attack EVs B
+    while True:
+        if Testing:
+            pkmnBspa = testSpaB
+            break
+        else:
+            try:
+                pkmnBspa = input("Please Enter the Special Attack EVs ")
+                if 0 <= int(pkmnBspa) <= 252:
+                    pkmnBspa = int(pkmnBspa)
+                    break
+                else:
+                    print("EVs fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
 
-# Get Current HP A
-while True:
-    if Testing:
-        currHP = testCurrHpA
-        break
-    else:
-        try:
-            currHP = input("Please Enter the Current HP ")
-            if 0 <= int(currHP) <= math.floor(
-                    (((2 * int(pkmnA.base_stats.hp) + 31 + (math.floor(int(pkmnAhp) / 4))) * int(
-                        pkmnAlvl)) / 100) + int(
-                        pkmnAlvl) + 10):
+    # Get Special Defense EVs B
+    while True:
+        if Testing:
+            pkmnBspd = testSpdB
+            break
+        else:
+            try:
+                pkmnBspd = input("Please Enter the Special Defense EVs ")
+                if 0 <= int(pkmnBspd) <= 252:
+                    pkmnBspd = int(pkmnBspd)
+                    break
+                else:
+                    print("EVs fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
+
+    # Get Speed EVs B
+    while True:
+        if Testing:
+            pkmnBspe = testSpeB
+            break
+        else:
+            try:
+                pkmnBspe = input("Please Enter the Speed EVs ")
+                if 0 <= int(pkmnBspe) <= 252:
+                    pkmnBspe = int(pkmnBspe)
+                    break
+                else:
+                    print("EVs fell outside of the allowed range ")
+            except ValueError:
+                print("Error")
+
+    # Get Current HP Percentage B
+    while True:
+        if Testing:
+            currHPB = testCurrHpB
+            break
+        else:
+            currHPB = input("Please Enter the Current HP Percentage ")
+            if 1 <= int(currHPB) <= 100:
                 break
             else:
                 print("HP fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
 
-# Get Nature A
-while True:
-    if Testing:
-        pkmnAnat = testNatureA
-        break
-    else:
-        pkmnAnat = input("Please Enter the Nature ").lower()
-        if pkmnAnat in NatureList:
+    # Get Nature B
+    while True:
+        if Testing:
+            pkmnBnat = testNatureB
             break
         else:
-            print("No such nature exists")
-
-# Get Ability A
-while True:
-    if Testing:
-        abilityA = testAbilityA
-    else:
-        abilityA = input("Please Enter the Ability ").lower()
-    break
-
-# Get Item A
-while True:
-    if Testing:
-        itemA = testItemA
-    else:
-        itemA = input("Please Enter the Item").lower()
-    break
-
-pokemonA = Pokemon(userIn, pkmnAlvl, pkmnAhp, pkmnAatk, pkmnAdef, pkmnAspa, pkmnAspd, pkmnAspe, pkmnAnat, currHP,
-                   abilityA, itemA)
-
-# Get Pokemon B
-while True:
-    if Testing:
-        userIn = testTargetName
-        pkmnB = pypokedex.get(name=userIn)
-        break
-    else:
-        try:
-            userIn = input("Enter a Pokemon: ").lower()
-            pkmnB = pypokedex.get(name=userIn)
-            break
-        except:
-            print("Something went wrong, try again ")
-
-# Get Level B
-while True:
-    if Testing:
-        pkmnBlvl = 100
-        break
-    else:
-        try:
-            pkmnBlvl = input("Please Enter the Pokemon's Level ")
-            if 1 <= int(pkmnBlvl) <= 100:
-                pkmnBlvl = int(pkmnBlvl)
+            pkmnBnat = input("Please Enter the Nature ").lower()
+            if pkmnBnat in NatureList:
                 break
             else:
-                print("Level fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
+                print("No such nature exists")
 
-# Get HP EVs B
-while True:
-    if Testing:
-        pkmnBhp = testHpB
-        break
-    else:
-        try:
-            pkmnBhp = input("Please Enter the HP EVs ")
-            if 0 <= int(pkmnBhp) <= 252:
-                pkmnBhp = int(pkmnBhp)
-                break
-            else:
-                print("EVs fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
-
-# Get Attack EVs B
-while True:
-    if Testing:
-        pkmnBatk = testAtkB
-        break
-    else:
-        try:
-            pkmnBatk = input("Please Enter the Attack EVs ")
-            if 0 <= int(pkmnBatk) <= 252:
-                pkmnBatk = int(pkmnBatk)
-                break
-            else:
-                print("EVs fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
-
-# Get Defense EVs B
-while True:
-    if Testing:
-        pkmnBdef = testDefB
-        break
-    else:
-        try:
-            pkmnBdef = input("Please Enter the Defense EVs ")
-            if 0 <= int(pkmnBdef) <= 252:
-                pkmnBdef = int(pkmnBdef)
-                break
-            else:
-                print("EVs fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
-
-# Get Special Attack EVs B
-while True:
-    if Testing:
-        pkmnBspa = testSpaB
-        break
-    else:
-        try:
-            pkmnBspa = input("Please Enter the Special Attack EVs ")
-            if 0 <= int(pkmnBspa) <= 252:
-                pkmnBspa = int(pkmnBspa)
-                break
-            else:
-                print("EVs fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
-
-# Get Special Defense EVs B
-while True:
-    if Testing:
-        pkmnBspd = testSpdB
-        break
-    else:
-        try:
-            pkmnBspd = input("Please Enter the Special Defense EVs ")
-            if 0 <= int(pkmnBspd) <= 252:
-                pkmnBspd = int(pkmnBspd)
-                break
-            else:
-                print("EVs fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
-
-# Get Speed EVs B
-while True:
-    if Testing:
-        pkmnBspe = testSpeB
-        break
-    else:
-        try:
-            pkmnBspe = input("Please Enter the Speed EVs ")
-            if 0 <= int(pkmnBspe) <= 252:
-                pkmnBspe = int(pkmnBspe)
-                break
-            else:
-                print("EVs fell outside of the allowed range ")
-        except ValueError:
-            print("Error")
-
-# Get Current HP Percentage B
-while True:
-    if Testing:
-        currHPB = testCurrHpB
-        break
-    else:
-        currHPB = input("Please Enter the Current HP Percentage ")
-        if 1 <= int(currHPB) <= 100:
+    # Get Ability B
+    while True:
+        if Testing:
+            abilityB = testAbilityB
             break
         else:
-            print("HP fell outside of the allowed range ")
-
-# Get Nature B
-while True:
-    if Testing:
-        pkmnBnat = testNatureB
-        break
-    else:
-        pkmnBnat = input("Please Enter the Nature ").lower()
-        if pkmnBnat in NatureList:
+            abilityB = input("Please Enter the Ability ").lower()
             break
+
+    # Get Item B
+    while True:
+        if Testing:
+            itemB = testItemB
         else:
-            print("No such nature exists")
-
-# Get Ability B
-while True:
-    if Testing:
-        abilityB = testAbilityB
-        break
-    else:
-        abilityB = input("Please Enter the Ability ").lower()
+            itemB = input("Please Enter the Item").lower()
         break
 
-# Get Item B
-while True:
-    if Testing:
-        itemB = testItemB
-    else:
-        itemB = input("Please Enter the Item").lower()
-    break
+    pokemonB = Pokemon(userIn, pkmnBlvl, pkmnBhp, pkmnBatk, pkmnBdef, pkmnBspa, pkmnBspd, pkmnBspe, pkmnBnat, currHPB,
+                       abilityB, itemB)
+    # Change HP from % To Number
+    varA = pypokedex.get(name=userIn).base_stats.hp
+    varB = math.floor(pkmnBhp / 4)
+    varC = pkmnBlvl / 100
+    varD = pkmnBlvl + 10
+    print(pokemonB.currentHP)
+    pokemonB.currentHP = int(((2 * int(varA)) + 31 + float(varB)) * float(varC)) + float(varD) * float(
+        float(currHPB) / 100)
+    print(pokemonB.currentHP)
+    return pokemonB
 
-pokemonB = Pokemon(userIn, pkmnBlvl, pkmnBhp, pkmnBatk, pkmnBdef, pkmnBspa, pkmnBspd, pkmnBspe, pkmnBnat, currHPB,
-                   abilityB, itemB)
-# Finally Correct Current HP math
-varA = pypokedex.get(name=userIn).base_stats.hp
-varB = math.floor(pkmnBhp / 4)
-varC = pkmnBlvl / 100
-varD = pkmnBlvl + 10
-print(pokemonB.currentHP)
-pokemonB.currentHP = int(((2 * int(varA)) + 31 + float(varB)) * float(varC)) + float(varD) * float(float(currHPB) / 100)
-print(pokemonB.currentHP)
 
-# print(pokemonB.name)
-# print(pokemonB.HP)
-# print(pokemonB.ATK)
-# print(pokemonB.DEF)
-# print(pokemonB.SPA)
-# print(pokemonB.SPD)
-# print(pokemonB.SPE)
+def getResults(pokemonA, pokemonB):
+    KillingRolls = 0
+    LosingRolls = 0
+    numerator = 0.0
+    denominator = 0
+
+    for moves in MoveList:
+        Rolls = getDamageRolls(pokemonA, moves, pokemonB, "none", 1)
+        # print(moves.name, Rolls)
+        for roll in Rolls:
+            if roll >= pokemonB.currentHP:
+                KillingRolls = KillingRolls + 1
+                numerator = float(numerator + (min(moves.accuracy, 100) / 100))
+                print(moves.name, roll)
+            else:
+                LosingRolls = LosingRolls + 1
+                denominator = denominator + 1
+
+    print("winning rolls", KillingRolls)
+    print("losing rolls", LosingRolls)
+    num = float(numerator / denominator) * 100
+    print(num, "%")
+
+
+pokemonA = getPokemonA()
+pokemonB = getPokemonB()
 
 readMoves("PokemonMoves.csv")
-removeBannedMoves()
-
-for moves in MoveList:
-    if moves.power == -1 and moves.name not in OHKO:
-        print(moves.name, moves.moveType, moves.category, moves.power, moves.accuracy)
-
-KillingRolls = 0
-LosingRolls = 0
-numerator = 0.0
-denominator = 0
-
-for moves in MoveList:
-    Rolls = getDamageRolls(pokemonA, moves, pokemonB, "none", 1)
-    # print(moves.name, Rolls)
-    for roll in Rolls:
-        if roll >= pokemonB.currentHP:
-            KillingRolls = KillingRolls + 1
-            numerator = float(numerator + (min(moves.accuracy, 100) / 100))
-            print(moves.name, roll)
-        else:
-            LosingRolls = LosingRolls + 1
-            denominator = denominator + 1
-
-print("winning rolls", KillingRolls)
-print("losing rolls", LosingRolls)
-num = float(numerator / denominator) * 100
-print(num, "%")
-
-print(resistBerry.get("babiri"))
-
-# moonblast = Move("moonblast", "fairy", "special", 95, 100)
-# Rolls = getDamageRolls(pokemonA, moonblast, pokemonB, "none", 1)
-# print(Rolls)
-# for roll in Rolls:
-#     if roll >= pokemonB.currentHP:
-#
-#         print("Win", roll)
-#     else:
-#         print("Loss", roll)
+getResults(pokemonA, pokemonB)
