@@ -528,6 +528,28 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
 
         return DamageRolls
 
+def getResults():
+    KillingRolls = 0
+    LosingRolls = 0
+    numerator = 0.0
+    denominator = 0
+
+    for moves in MoveList:
+        Rolls = getDamageRolls(pokemonA, moves, pokemonB, "none", 1)
+        # print(moves.name, Rolls)
+        for roll in Rolls:
+            if roll >= pokemonB.currentHP:
+                KillingRolls = KillingRolls + 1
+                numerator = float(numerator + (min(moves.accuracy, 100) / 100))
+                print(moves.name, roll)
+            else:
+                LosingRolls = LosingRolls + 1
+                denominator = denominator + 1
+
+    print("winning rolls", KillingRolls)
+    print("losing rolls", LosingRolls)
+    num = float(numerator / denominator) * 100
+    print(num, "%")
 
 # Get Pokemon A
 while True:
@@ -873,7 +895,7 @@ while True:
 
 pokemonB = Pokemon(userIn, pkmnBlvl, pkmnBhp, pkmnBatk, pkmnBdef, pkmnBspa, pkmnBspd, pkmnBspe, pkmnBnat, currHPB,
                    abilityB, itemB)
-# Finally Correct Current HP math
+# Change HP from % To Number
 varA = pypokedex.get(name=userIn).base_stats.hp
 varB = math.floor(pkmnBhp / 4)
 varC = pkmnBlvl / 100
@@ -882,51 +904,5 @@ print(pokemonB.currentHP)
 pokemonB.currentHP = int(((2 * int(varA)) + 31 + float(varB)) * float(varC)) + float(varD) * float(float(currHPB) / 100)
 print(pokemonB.currentHP)
 
-# print(pokemonB.name)
-# print(pokemonB.HP)
-# print(pokemonB.ATK)
-# print(pokemonB.DEF)
-# print(pokemonB.SPA)
-# print(pokemonB.SPD)
-# print(pokemonB.SPE)
-
 readMoves("PokemonMoves.csv")
-removeBannedMoves()
-
-for moves in MoveList:
-    if moves.power == -1 and moves.name not in OHKO:
-        print(moves.name, moves.moveType, moves.category, moves.power, moves.accuracy)
-
-KillingRolls = 0
-LosingRolls = 0
-numerator = 0.0
-denominator = 0
-
-for moves in MoveList:
-    Rolls = getDamageRolls(pokemonA, moves, pokemonB, "none", 1)
-    # print(moves.name, Rolls)
-    for roll in Rolls:
-        if roll >= pokemonB.currentHP:
-            KillingRolls = KillingRolls + 1
-            numerator = float(numerator + (min(moves.accuracy, 100) / 100))
-            print(moves.name, roll)
-        else:
-            LosingRolls = LosingRolls + 1
-            denominator = denominator + 1
-
-print("winning rolls", KillingRolls)
-print("losing rolls", LosingRolls)
-num = float(numerator / denominator) * 100
-print(num, "%")
-
-print(resistBerry.get("babiri"))
-
-# moonblast = Move("moonblast", "fairy", "special", 95, 100)
-# Rolls = getDamageRolls(pokemonA, moonblast, pokemonB, "none", 1)
-# print(Rolls)
-# for roll in Rolls:
-#     if roll >= pokemonB.currentHP:
-#
-#         print("Win", roll)
-#     else:
-#         print("Loss", roll)
+getResults()
