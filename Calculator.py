@@ -3,24 +3,6 @@ import math
 import pypokedex
 import PySimpleGUI as sg
 
-###-GUI-Setup-###
-layout = [[sg.Text("This is a Metronome Calculator")], [sg.Button("Default"),sg.Button("Custom")]]
-window = sg.Window("Test", layout)
-
-while True:
-    event, values = window.read()
-    print(event)
-    if event == "Default" or event == sg.WIN_CLOSED:
-        window.close()
-        break
-    elif event == "Custom":
-        print("DO NOTHING")
-
-
-
-
-#################
-
 
 class Move:
     def __init__(self, name, moveType, moveCat, power, accuracy):
@@ -74,6 +56,20 @@ class Pokemon:
         self.SPE = math.floor(((((2 * self.pkmn.base_stats.speed + self.speI + (
             math.floor(self.speE / 4))) * self.level) / 100) + 5) * speMod)
 
+
+class StandardPokemon:
+    def __init__(self, name, displayname, hp, attack, defense, specialattack, specialdefense, speed):
+        self.name = name
+        self.displayName = displayname
+        self.hp = hp
+        self.attack = attack
+        self.defense = defense
+        self.specialattack = specialattack
+        self.specialdefense = specialdefense
+        self.speed = speed
+
+
+pokedex = []
 
 Testing = True
 testPokemonName = "zapdos"
@@ -227,7 +223,7 @@ def removeBannedMoves():
 
 
 def readMoves(path):
-    times = 0
+    times = 0  # ignore row headers
     with open(path, 'r') as f:
         reader = csv.reader(f)
         for row in reader:
@@ -236,6 +232,21 @@ def readMoves(path):
             else:
                 MoveList.append(Move(row[0].lower(), row[1].lower(), row[2].lower(), row[3], row[4]))
     removeBannedMoves()
+    f.close()
+
+
+def getPokedex(path):
+    with open(path, 'r') as f:
+        times = 0  # ignore row headers
+        reader = csv.reader(f)
+        for row in reader:
+            if times == 0:
+                times = 1
+            else:
+                if len(row[0]) > 0:
+                    pokedex.append(
+                        StandardPokemon(row[0].lower, row[1].lower, row[2], row[3], row[4], row[5], row[6], row[7]))
+                    print(row)
 
 
 def getTypeMatchups(pokemon):
@@ -281,8 +292,8 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
     # targetMAXHP = pypokedex.get(name=target.name).base_stats.hp * math.floor(target.hpE / 4) * target.level / 100 * \
     #               target.level + 10
     targetMAXHP = (
-                (2 * pypokedex.get(name=target.name).base_stats.hp + target.hpI + (target.hpE / 4) * target.level / 100)
-                + target.level + 10)
+            (2 * pypokedex.get(name=target.name).base_stats.hp + target.hpI + (target.hpE / 4) * target.level / 100)
+            + target.level + 10)
 
     if move.name in "Never":  # Endeavor, False Swipe, Nature's Madness, Ruination
         if move.name.lower() == "false swipe":
@@ -937,8 +948,28 @@ def getResults(pokemonA, pokemonB):
     print(num, "%")
 
 
+###-GUI-Setup-###
+layout = [[sg.Text("This is a Metronome Calculator")], [sg.Button("Default"), sg.Button("Custom")]]
+window = sg.Window("Test", layout)
+
+###Data Input###
+readMoves("PokemonMoves.csv")
+getPokedex("Pokemon Stats.csv")
+##DataInput###
+
+
+while True:
+    event, values = window.read()
+    print(event)
+    if event == "Default" or event == sg.WIN_CLOSED:
+        window.close()
+        break
+    elif event == "Custom":
+        print("DO NOTHING")
+
+#################
+
+
 pokemonA = getPokemonA()
 pokemonB = getPokemonB()
-
-readMoves("PokemonMoves.csv")
 getResults(pokemonA, pokemonB)
