@@ -10,6 +10,7 @@ heatproof fire/2dmg
 dry skin fire*2 dmg
 
 
-deal with scappy at some point
+deal with scrappy at some point
 maybe temporarily remove "ghost" from types and re add after scappy is done
 add dictionary of berries and what they resist -> implement Ripen to do .25 instead of .5 dmg
+need to implement mold breaker type abilities
