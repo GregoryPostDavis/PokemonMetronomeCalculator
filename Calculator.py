@@ -41,6 +41,7 @@ class Pokemon:
         self.status = "healthy"
 
         [atkMod, defMod, spaMod, spdMod, speMod] = NatureList.get(nature.lower())
+        print([atkMod, defMod, spaMod, spdMod, speMod])
 
         # Figure Out Stats (Pre Stat Buffs/Debuffs)
         self.HP = math.floor((((2 * self.pkmn.base_stats.hp + self.hpI + (
@@ -86,13 +87,13 @@ testItemA = ""
 pokemonA = None
 
 testTargetName = "mew"
-testHpB = 252
+testHpB = 0
 testAtkB = 0
 testDefB = 0
-testSpaB = 252
+testSpaB = 0
 testSpdB = 0
 testSpeB = 0
-testCurrHpB = 100
+testCurrHpB = 1
 testNatureB = "modest"
 testAbilityB = "synchronize"
 testItemB = ""
@@ -123,6 +124,10 @@ bannedMoves = ["after you", "apple acid", "armor cannon", "assist", "astral barr
 OHKO = ["fissure", "guillotine", "horn drill", "sheer cold"]
 NEVER = ["false swipe", "natures madness", "ruination", "endeavor"]
 AutoCrit = ["flower trick", "frost breath", "storm throw", "surging strikes", "wicked blow", "zippy zap"]
+BoostedCrit = ["aqua cutter", "air cutter", "aeroblast", "attack order", "blaze kick", "crabhammer", "cross chop",
+               " cross poison", "drill run", "esper wing", "ivy cudgel", " karate chop", "leaf blade", "night slash",
+               "poison tail", "psycho cut", "razor wind", "razor leaf", "shadow blast", "shadow claw", "sky attack",
+               " slash", "snipe shot", "spacial rend", "stone edge", "triple arrows"]
 # Attack Defense SpAtk SpDef Speed
 NatureList = dict(hardy=[1, 1, 1, 1, 1], lonely=[1.1, .9, 1, 1, 1], brave=[1.1, 1, 1, 1, .9],
                   adamant=[1.1, 1, .9, 1, 1],
@@ -378,6 +383,10 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             Ability = 0
 
     Critical = 1  # Deal with Crits Later
+    if move in AutoCrit:
+        Critical = 1.5
+        if target.ability.lower() == "battle armor" or target.ability.lower() == "shell armor":
+            Critical = 1
 
     if move.moveType in target.quarter:
         TypeMatchup = .25
@@ -463,7 +472,7 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             for x in range(1):
                 DamageRolls[x] = user.level
         elif move.name.lower() == "sonicboom" or move.name.lower() == "sonic boom":
-            if "ghost" in target.types or target.ability.lower() == "soundproof":
+            if target.ability.lower() == "soundproof":
                 DamageRolls = [0]
             else:
                 DamageRolls = [20]
@@ -515,6 +524,8 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
                     random / 100) * STAB * TypeMatchup * Burn * Ability)
                 DamageRolls.append(ThisRoll)
         elif move.name.lower() == "wring out":
+            # TODO: Fix this damage calc. Its so horribly wrong
+
             # Actual Damage being Calculated
             for random in range(85, 101):
                 offense = user.ATK
@@ -912,15 +923,16 @@ def getPokemonB():
 
     pokemonB = Pokemon(userIn, pkmnBlvl, pkmnBhp, pkmnBatk, pkmnBdef, pkmnBspa, pkmnBspd, pkmnBspe, pkmnBnat, currHPB,
                        abilityB, itemB)
-    # Change HP from % To Number
-    varA = pypokedex.get(name=userIn).base_stats.hp
-    varB = math.floor(pkmnBhp / 4)
-    varC = pkmnBlvl / 100
-    varD = pkmnBlvl + 10
-    print(pokemonB.currentHP)
-    pokemonB.currentHP = int(((2 * int(varA)) + 31 + float(varB)) * float(varC)) + float(varD) * float(
-        float(currHPB) / 100)
-    print(pokemonB.currentHP)
+    if not Testing:
+        # Change HP from % To Number
+        varA = pypokedex.get(name=userIn).base_stats.hp
+        varB = math.floor(pkmnBhp / 4)
+        varC = pkmnBlvl / 100
+        varD = pkmnBlvl + 10
+        print(pokemonB.currentHP)
+        pokemonB.currentHP = int(((2 * int(varA)) + 31 + float(varB)) * float(varC)) + float(varD) * float(
+            float(currHPB) / 100)
+        print(pokemonB.currentHP)
     return pokemonB
 
 
@@ -930,14 +942,16 @@ def getResults(pokemonA, pokemonB):
     numerator = 0.0
     denominator = 0
 
+    print("Current HP:", pokemonB.currentHP)
     for moves in MoveList:
         Rolls = getDamageRolls(pokemonA, moves, pokemonB, "none", 1)
-        # print(moves.name, Rolls)
+        print(moves.name, Rolls)
         for roll in Rolls:
             if roll >= pokemonB.currentHP:
                 KillingRolls = KillingRolls + 1
                 numerator = float(numerator + (min(moves.accuracy, 100) / 100))
-                print(moves.name, roll)
+                denominator = denominator + 1
+                # print(moves.name, roll)
             else:
                 LosingRolls = LosingRolls + 1
                 denominator = denominator + 1
