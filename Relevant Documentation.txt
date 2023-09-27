@@ -6,6 +6,7 @@ Nature List: https://bulbapedia.bulbagarden.net/wiki/Nature#List_of_Natures
 Unimplemented Moves:
 Trump Card: https://bulbapedia.bulbagarden.net/wiki/Trump_Card_(move)#Generation_VIII_onwards
 Flail: https://bulbapedia.bulbagarden.net/wiki/Flail_(move)#Generation_III_onwards
+Wring Out: https://bulbapedia.bulbagarden.net/wiki/Wring_Out_(move)#Generation_V_to_VII
 
 Unimplemented Features:
 https://bulbapedia.bulbagarden.net/wiki/Minimize_(move)#Vulnerability_to_moves
