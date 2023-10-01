@@ -93,7 +93,7 @@ testDefB = 0
 testSpaB = 0
 testSpdB = 0
 testSpeB = 0
-testCurrHpB = 1
+testCurrHpB = 50
 testNatureB = "modest"
 testAbilityB = "synchronize"
 testItemB = ""
@@ -383,10 +383,6 @@ def getDamageRolls(user, move, target, currentWeather, glaive):
             Ability = 0
 
     Critical = 1  # Deal with Crits Later
-    if move in AutoCrit:
-        Critical = 1.5
-        if target.ability.lower() == "battle armor" or target.ability.lower() == "shell armor":
-            Critical = 1
 
     if move.moveType in target.quarter:
         TypeMatchup = .25
@@ -947,14 +943,34 @@ def getResults(pokemonA, pokemonB):
         Rolls = getDamageRolls(pokemonA, moves, pokemonB, "none", 1)
         print(moves.name, Rolls)
         for roll in Rolls:
-            if roll >= pokemonB.currentHP:
-                KillingRolls = KillingRolls + 1
-                numerator = float(numerator + (min(moves.accuracy, 100) / 100))
-                denominator = denominator + 1
-                # print(moves.name, roll)
+            if moves.name in AutoCrit:
+                if pokemonB.ability.lower() == "battle armor" or pokemonB.ability.lower() == "shell armor":
+                    if roll >= pokemonB.currentHP:
+                        KillingRolls = KillingRolls + 1
+                        numerator = float(numerator + (min(moves.accuracy, 100) / 100))
+                        denominator = denominator + 1
+                        # print(moves.name, roll)
+                    else:
+                        LosingRolls = LosingRolls + 1
+                        denominator = denominator + 1
+                else:
+                    if math.floor(roll * 1.5) >= pokemonB.currentHP:
+                        KillingRolls = KillingRolls + 1
+                        numerator = float(numerator + (min(moves.accuracy, 100) / 100))
+                        denominator = denominator + 1
+                        # print(moves.name, roll)
+                    else:
+                        LosingRolls = LosingRolls + 1
+                        denominator = denominator + 1
             else:
-                LosingRolls = LosingRolls + 1
-                denominator = denominator + 1
+                if roll >= pokemonB.currentHP:
+                    KillingRolls = KillingRolls + 1
+                    numerator = float(numerator + (min(moves.accuracy, 100) / 100))
+                    denominator = denominator + 1
+                    # print(moves.name, roll)
+                else:
+                    LosingRolls = LosingRolls + 1
+                    denominator = denominator + 1
 
     print("winning rolls", KillingRolls)
     print("losing rolls", LosingRolls)
