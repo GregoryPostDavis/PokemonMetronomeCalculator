@@ -151,6 +151,8 @@ Soundproof = ["boomburst", "bug buzz", "chatter", "clanging scales", "clangorous
 MultiHit = ["arm thrust", "barrage", "bone rush", "bullet seed", "comet punch", "double slap", "fury attack",
             "fury swipes", "icicle spear", "pin missile", "rock blast", "scale shot", "spike cannon", "tail slap",
             "water shuriken"]
+Windrider = ["aeroblast", "air cutter", "bleakwind storm", "blizzard", "fairy wind", "gust", "heat wave", "hurricane",
+             "icy wind", "petal blizzard", "sandsear storm", "springtide storm", "twister", "wildbolt storm"]
 FixedMulti = ["bonemerang", "double hit", "double iron bash", "double kick", "dragon darts", "dual chop",
               "dual wingbeat", "gear grind", "surging strikes", "triple dive", "twin beam", "twin needle"]
 AccuracyMulti = ["triple axel", "triple kick", "population bomb"]
