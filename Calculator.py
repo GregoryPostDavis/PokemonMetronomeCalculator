@@ -151,11 +151,15 @@ Soundproof = ["boomburst", "bug buzz", "chatter", "clanging scales", "clangorous
 MultiHit = ["arm thrust", "barrage", "bone rush", "bullet seed", "comet punch", "double slap", "fury attack",
             "fury swipes", "icicle spear", "pin missile", "rock blast", "scale shot", "spike cannon", "tail slap",
             "water shuriken"]
-Windrider = ["aeroblast", "air cutter", "bleakwind storm", "blizzard", "fairy wind", "gust", "heat wave", "hurricane",
+Sharpness = ["Aerial Ace", "Air Cutter", "Air Slash", "Aqua Cutter","Ceaseless Edge", "Fury Cutter", "Leaf Blade",
+             "Night Slash", "Psycho Cut", "Razor Shell","Tachyon Cutter", "Sacred Sword", "Slash", "Solar Blade",
+             "Stone Axe", "X-Scissor", "Secret Sword", "Razor Leaf", "Psyblade","Population Bomb", "Mighty Cleave",
+             "Kowtow Cleave", "Cut", "Cross Poison", "Bitter Blade", "Behemoth Blade"]
+WindRider = ["aeroblast", "air cutter", "bleakwind storm", "blizzard", "fairy wind", "gust", "heat wave", "hurricane",
              "icy wind", "petal blizzard", "sandsear storm", "springtide storm", "twister", "wildbolt storm"]
 FixedMulti = ["bonemerang", "double hit", "double iron bash", "double kick", "dragon darts", "dual chop",
               "dual wingbeat", "gear grind", "surging strikes", "triple dive", "twin beam", "twin needle"]
-AccuracyMulti = ["triple axel", "triple kick", "population bomb"]
+AccuracyMulti = ["triple axel", "triple kick", "population bomb", "tachyon cutter"]
 Damp = ["explosion", "self-destruct", "mind blown", "misty explosion"]
 TypeImmune = dict(levitate="ground", voltabsorb="electric", waterabsorb="water", lightningrod="electric",
                   stormdrain="water", eartheater="ground", flashfire="fire", motordrive="electric",
