@@ -157,7 +157,7 @@ AccuracyMulti = ["triple axel", "triple kick", "population bomb"]
 Damp = ["explosion", "self-destruct", "mind blown", "misty explosion"]
 TypeImmune = dict(levitate="ground", voltabsorb="electric", waterabsorb="water", lightningrod="electric",
                   stormdrain="water", eartheater="ground", flashfire="fire", motordrive="electric",
-                  dryskin="water", sapsipper="grass")
+                  dryskin="water", sapsipper="grass", wellbakedbody="fire")
 IgnoreAbilities = ["mold breaker", "mycelium might", "teravolt", "turboblaze"]
 TypeList = ["Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", "Ground",
             "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"]
