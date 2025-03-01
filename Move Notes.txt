@@ -26,5 +26,3 @@ Need to implement items
 Need to implement Parental Bond
 
 Wring out is implemented incorrectly
-
-Need to implement Syrup Bomb, Matcha Gotcha, Ivy Cudgel, Blood Moon, Electro Shot, Thunder Clap, Tachyon Cutter, Psychic Noise, Upper Hand
